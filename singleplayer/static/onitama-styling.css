@@ -1,0 +1,148 @@
+.pawn {
+    background-position: top left;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    position: absolute;
+    top: 0%;
+}
+
+.pawn-empty {
+    background-image: url("images/pawns/blank.png");
+}
+
+.pawn-blue-master {
+    background-image: url("images/pawns/blue_master_pawn.png");
+}
+
+.pawn-blue-normal {
+    background-image: url("images/pawns/blue_pawn.png");
+}
+
+.pawn-red-master {
+    background-image: url("images/pawns/red_master_pawn.png");
+}
+
+.pawn-red-normal {
+    background-image: url("images/pawns/red_pawn.png");
+}
+
+body {
+    background-image: url("images/paper.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.board {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    grid-template-columns: repeat(5, auto);
+    gap: 0px;
+    margin: 0px 20px 0px 20px;
+    padding: 10px;
+    width: 334px;
+    height: 334px;
+    /* background-color: #2e2e23; */
+    background-image: url("images/board-background.png");
+    /* border-style: solid;
+    border-width: 9px;
+    border-color: #2e2e23; */
+    border-radius: 15px;
+}
+
+.space {
+    /* border: 1px solid rgba(0, 0, 0, 0.8); */
+    max-width: 100%;
+    max-height: 100%;
+    position: relative;
+    /* background-color: #bda377; */
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    margin: 0px;
+}
+
+.blue-temple {
+    position: absolute;
+    width: 87.5%;
+    height: 7.8%;
+    bottom: 10px;
+    z-index: 1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("images/blue-temple.png");
+}
+
+.rotated {
+    transform: rotate(180deg);
+}
+
+.card {
+    width:150px;
+    height:90px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 5px;
+}
+
+
+.player-hand {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-space {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.selection-empty {
+    background-image: url("images/selection/empty.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.selection-pawn {
+    background-image: url("images/selections/red-pawn-selected.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+}
+
+.selection-dest {
+    background-image: url("images/selections/red-target-square.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.selection-card-empty {
+    background-image: url("images/selections/empty.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
+.selection-card-red {
+    background-image: url("images/selections/red-card-selected.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
