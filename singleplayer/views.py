@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 import json
-from .static.game import game_state
-from .static.game import move as onitama_move
-from .static.game import minimax
+from .game import game_state
+from .game import move as onitama_move
+from .game import minimax
 
 # back_end_game = None
 
