@@ -150,7 +150,7 @@ function perform_move() {
     // move the cards
     document.getElementById("middle_card_0").style.backgroundImage = state.clicked_card.style.backgroundImage;
     state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
-    document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blank.png)";
+    document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
 
     // send a fetch message to the server with the state
     var move_info = {
