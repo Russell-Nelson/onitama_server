@@ -5,8 +5,6 @@ from .game import game_state
 from .game import move as onitama_move
 from .game import minimax
 
-# back_end_game = None
-
 # Create your views here.
 def index(request):
     return render(request, "singleplayer/index.html")
