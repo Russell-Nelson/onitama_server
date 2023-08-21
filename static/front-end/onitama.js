@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/" + deck[4].name + ".png)";
     }
     else {
-        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blank.png)";
+        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
         document.getElementById("middle_card_0").style.backgroundImage = "url(static/images/cards/" + deck[4].name + ".png)";
     }
 

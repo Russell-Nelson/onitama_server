@@ -38,7 +38,7 @@ def user_move(request):
     computer_move = minimax.alpha_beta_cutoff_search(
         back_end_game,
         minimax.Onitama(),
-        d=3,
+        d=4,
         eval_fn=minimax.evaluation3
     )
     movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
