@@ -5,7 +5,6 @@
 // fix the scaling of the background paper (load time)
 // update all textures for the new scaling fixes
 
-// add the little blue and red stripes
 // add a setup page for depth
 // add animations to the pieces
 // add a tutorial mode
