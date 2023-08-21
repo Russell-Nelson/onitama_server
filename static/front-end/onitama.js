@@ -35,9 +35,13 @@ const state = {
     clicked_pawn: null,
     clicked_card: null,
     clicked_dest: null,
+    waiting: false,
     possible_destinations:[],
 
     update_clicked_pawn(pawn) {
+        if (this.waiting) {
+            return;
+        }
         if (this.clicked_pawn !== null) {
             this.clicked_pawn.querySelector(".selection").className = "selection selection-empty";
         }
@@ -47,6 +51,9 @@ const state = {
     },
 
     update_clicked_card(card) {
+        if (this.waiting) {
+            return;
+        }
         if (this.clicked_card !== null) {
             this.clicked_card.firstElementChild.setAttribute("class", "selection-card-empty");
         }
@@ -107,6 +114,7 @@ function clicked_space(e) {
 
     if (state.possible_destinations.includes(space)) {
         state.clicked_dest = space;
+        state.waiting = true;
         perform_move();
     }
 }
@@ -120,6 +128,7 @@ function clicked_card(e) {
 }
 
 function perform_move() {
+    console.log(state.waiting);
     // var sourceRect = state.clicked_pawn.querySelector(".pawn").getBoundingClientRect();
     // var destRect = state.clicked_dest.querySelector(".pawn").getBoundingClientRect();
     // var dx = destRect.x - sourceRect.x;
@@ -193,6 +202,7 @@ function perform_move() {
             return;
         }
         
+        state.waiting = false;
         return;
     })
 
