@@ -4,6 +4,13 @@ import json
 from .game import game_state
 from .game import move as onitama_move
 from .game import minimax
+from django import forms
+
+playstyle_dictionary = {
+    "defensive": minimax.evaluation,
+    "balanced": minimax.evaluation2,
+    "aggresive": minimax.evaluation3
+}
 
 # Create your views here.
 def index(request):
@@ -36,8 +43,8 @@ def user_move(request):
     computer_move = minimax.alpha_beta_cutoff_search(
         back_end_game,
         minimax.Onitama(),
-        d=4,
-        eval_fn=minimax.evaluation3
+        d=request.session["depth"],
+        eval_fn=playstyle_dictionary[request.session["playstyle"]]
     )
     movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
 
@@ -57,6 +64,20 @@ def user_move(request):
 
     return JsonResponse(computer_move_dict)
 
+def AIsettings(request):
+
+    AI_settings = json.load(request)
+    playstyle = AI_settings["playstyle"]
+    if playstyle not in ["defensive", "balanced", "aggresive"]:
+        return JsonResponse({"AI_setting_status": "INVALID"})
+    depth = int(AI_settings["depth"])
+    if depth not in [1, 2, 3, 4]:
+        return JsonResponse({"AI_setting_status": "INVALID"})
+    request.session["playstyle"] = playstyle
+    request.session["depth"] = depth
+    return JsonResponse({"AI_setting_status": "OK"})
+
+
 def setup(request):
     setup_data = json.load(request)
     # setup_data example: 
@@ -65,16 +86,14 @@ def setup(request):
     #  'red_card_0': 'dragon', 
     #  'red_card_1': 'rooster', 
     #  'middle_card': 'ram'}
-
-    # global back_end_game
     back_end_game = game_state.Game_state(setup_data, setup=True)
 
     if back_end_game.current_player == back_end_game.blue_player:
         computer_move = minimax.alpha_beta_cutoff_search(
             back_end_game,
             minimax.Onitama(),
-            d=3,
-            eval_fn=minimax.evaluation3
+            d=request.session["depth"],
+            eval_fn=playstyle_dictionary[request.session["playstyle"]]
         )
         movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
         computer_move_dict = {

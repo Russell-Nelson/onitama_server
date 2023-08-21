@@ -127,8 +127,27 @@ function clicked_card(e) {
     }
 }
 
+function AI_settings(e) {
+    var AI_settings = {
+        playstyle: document.getElementById("AI-settings")["playstyle"],
+        depth: document.getElementById("AI-settings")["depth"]
+    };
+    fetch("/AIsettings/", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrftoken,
+    },
+        body: JSON.stringify(AI_settings) //JavaScript object of data to POST
+    })
+    .then(response => {
+            return
+    })
+}
+
 function perform_move() {
-    console.log(state.waiting);
     // var sourceRect = state.clicked_pawn.querySelector(".pawn").getBoundingClientRect();
     // var destRect = state.clicked_dest.querySelector(".pawn").getBoundingClientRect();
     // var dx = destRect.x - sourceRect.x;
@@ -210,9 +229,37 @@ function perform_move() {
     return;
 }
 
-// build the board, spaces, and fill the cards
 document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("AI-settings").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        var AI_settings = {
+            playstyle: formData.get("playstyle"),
+            depth: formData.get("depth")
+        };
+        document.getElementById("AI-settings").remove()
+        fetch("/AIsettings/", {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers:{
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken,
+        },
+            body: JSON.stringify(AI_settings) //JavaScript object of data to POST
+        })
+        .then(response => {
+            start_a_game()
+            return
+        })
+    });
+});
+
+// build the board, spaces, and fill the cards
+// document.addEventListener('nonsense', () => {
+function start_a_game() {
     var board = document.getElementsByClassName("board")[0];
+    board.style.backgroundImage = "url(static/images/board-background.png)";
 
     // create the spaces
     for (let i = 0; i < 5; i++) {
@@ -339,4 +386,4 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return
     })
-});
+};
