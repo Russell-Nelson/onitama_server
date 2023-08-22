@@ -147,3 +147,81 @@ body {
     width: 100%;
     height: 100%;
 }
+
+/* Form styling */
+/* https://stackoverflow.com/questions/17541614/use-images-instead-of-radio-buttons */
+
+form {
+    text-align: center;
+    background: url("images/board-background.png");
+    display: block;
+    width: 30em;
+    position: relative;
+    border-radius: 10px;
+}
+
+#settings-overlay {
+    justify-content: center;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    font-size: 14px;
+    font-family: "Noto Sans",Sans-Serif;
+    color: #bababa;
+}
+
+group.radio {
+    /* margin: 0 auto 1em auto;
+    width: 70%; */
+    display: flex;
+    gap: 0px;
+    justify-content: center;
+}
+
+group.radio input:checked + label {
+	background: #82a492e5;
+}
+
+group.radio input:checked + label {
+	color: #fff;
+}
+
+group.radio input:checked + label {
+	box-shadow: 0 3px 4px rgba(0,0,0,.15) inset;
+}
+
+group.radio label, group.radio .label {
+	/* justify-content: center; */
+	padding: 10px;
+	height: 100%;
+	cursor: pointer;
+	border-left: 1px solid #404040;
+    border-top: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+	user-select: none;
+}
+
+.form-submit-button {
+    background: #82a49200;
+    color: #bababa;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    text-shadow: none;
+    padding: 10px;
+    margin: 10px;
+}
+.form-submit-button:hover {
+    background: #82a492;
+    color: #fff;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    text-shadow: none;
+    cursor: pointer;
+}

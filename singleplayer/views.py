@@ -9,7 +9,7 @@ from django import forms
 playstyle_dictionary = {
     "defensive": minimax.evaluation,
     "balanced": minimax.evaluation2,
-    "aggresive": minimax.evaluation3
+    "aggressive": minimax.evaluation3
 }
 
 # Create your views here.
@@ -68,7 +68,7 @@ def AIsettings(request):
 
     AI_settings = json.load(request)
     playstyle = AI_settings["playstyle"]
-    if playstyle not in ["defensive", "balanced", "aggresive"]:
+    if playstyle not in ["defensive", "balanced", "aggressive"]:
         return JsonResponse({"AI_setting_status": "INVALID"})
     depth = int(AI_settings["depth"])
     if depth not in [1, 2, 3, 4]:

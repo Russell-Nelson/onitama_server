@@ -5,7 +5,6 @@
 // fix the scaling of the background paper (load time)
 // update all textures for the new scaling fixes
 
-// add a setup page for depth
 // add animations to the pieces
 // add a tutorial mode
 
@@ -237,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             playstyle: formData.get("playstyle"),
             depth: formData.get("depth")
         };
-        document.getElementById("AI-settings").remove()
+        document.getElementById("settings-overlay").remove()
         fetch("/AIsettings/", {
             method: 'POST',
             credentials: 'same-origin',
@@ -256,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // build the board, spaces, and fill the cards
-// document.addEventListener('nonsense', () => {
 function start_a_game() {
     var board = document.getElementsByClassName("board")[0];
     board.style.backgroundImage = "url(static/images/board-background.png)";

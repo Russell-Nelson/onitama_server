@@ -10,29 +10,53 @@
         <script src="{% static 'front-end/onitama.js' %}"></script>
     </head>
     <body>
-        <form id="AI-settings" method="post">
-            {% csrf_token %}
-            PLAYSTYLE <br>
-            <input type="radio" id="defensive" name="playstyle" value="defensive">
-            <label for="defensive">Defensive</label>
-            <input type="radio" id="balanced" name="playstyle" value="balanced">
-            <label for="balanced">Balanced</label>
-            <input type="radio" id="aggresive" name="playstyle" value="aggresive">
-            <label for="aggresive">Aggresive</label> <br>
-
-            DIFFICULTY <br>
-            <input type="radio" id="depth-1" name="depth" value=1>
-            <label for="depth-1">1</label>
-            <input type="radio" id="depth-2" name="depth" value=2>
-            <label for="depth-2">2</label>
-            <input type="radio" id="depth-3" name="depth" value=3>
-            <label for="depth-3">3</label>
-            <input type="radio" id="depth-4" name="depth" value=4>
-            <label for="depth-4">4</label> <br>
-
-            <input type="submit" value="Play">
-
-        </form>
+        <div id="settings-overlay">
+            <form id="AI-settings" method="post">
+                {% csrf_token %}
+                <h1>Game Setup</h1>
+                <h2>Playstyle</h2>
+                <div class="config-playstyle">
+                    <group class="radio">
+                        <div>
+                            <input id="defensive" type="radio" name="playstyle" value="defensive" style="position: absolute; left: -99999px;">
+                            <label for="defensive" class="playstyle-label" style="border-radius: 4px 0px 0px 4px;">Defensive</label>
+                        </div>
+                        <div>
+                            <input id="balanced" type="radio" name="playstyle" value="balanced" checked="" style="position: absolute; left: -99999px;">
+                            <label for="balanced" class="playstyle-label">Balanced</label>
+                        </div>
+                        <div>
+                            <input id="aggressive" type="radio" name="playstyle" value="aggressive" style="position: absolute; left: -99999px;">
+                            <label for="aggressive" class="playstyle-label" style="border-right: 1px solid #404040; border-radius: 0px 4px 4px 0px;">Aggressive</label>
+                        </div>
+                    </group>
+                </div>
+                <br>
+                <h2>Strength</h2>
+                <div class="config-strength">
+                    <group class="radio">
+                        <div>
+                            <input id="depth-1" type="radio" name="depth" value="1" checked="" style="position: absolute; left: -99999px;">
+                            <label for="depth-1" class="depth-label" style="border-radius: 4px 0px 0px 4px;">1</label>
+                        </div>
+                        <div>
+                            <input id="depth-2" type="radio" name="depth" value="2" style="position: absolute; left: -99999px;">
+                            <label for="depth-2" class="depth-label">2</label>
+                        </div>
+                        <div>
+                            <input id="depth-3" type="radio" name="depth" value="3" style="position: absolute; left: -99999px;">
+                            <label for="depth-3" class="depth-label">3</label>
+                        </div>
+                        <div>
+                            <input id="depth-4" type="radio" name="depth" value="4" style="position: absolute; left: -99999px;">
+                            <label for="depth-4" class="depth-label" style="border-right: 1px solid #404040; border-radius: 0px 4px 4px 0px;">4</label>
+                        </div>
+                    </group>
+                </div>
+                <br>
+                <input type="submit" value="Play" class="form-submit-button">
+            </form>
+        </div>
         <div class="player-hand">
             <div class="card rotated" id="blue_card_0"></div>
             <div class="card rotated" id="blue_card_1"></div>
