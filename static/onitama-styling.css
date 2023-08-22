@@ -158,6 +158,7 @@ form {
     width: 30em;
     position: relative;
     border-radius: 10px;
+    z-index: 2;
 }
 
 #settings-overlay {
@@ -170,7 +171,7 @@ form {
     left: 0;
     bottom: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.075);
     z-index: 1;
     font-size: 14px;
     font-family: "Noto Sans",Sans-Serif;
@@ -214,8 +215,8 @@ group.radio label, group.radio .label {
     border: 1px solid #404040;
     border-radius: 4px;
     text-shadow: none;
-    padding: 10px;
-    margin: 10px;
+    padding: 10px 20px 10px 20px;
+    margin: 20px;
 }
 .form-submit-button:hover {
     background: #82a492;
