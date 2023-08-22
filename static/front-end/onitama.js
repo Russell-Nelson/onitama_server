@@ -7,6 +7,7 @@
 
 // add animations to the pieces
 // add a tutorial mode
+// customize the evaluation functions
 
 // PROBLEMS:
 // having multiple tabs open within the same browser is a problem

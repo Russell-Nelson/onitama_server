@@ -7,9 +7,9 @@ from .game import minimax
 from django import forms
 
 playstyle_dictionary = {
-    "defensive": minimax.evaluation,
-    "balanced": minimax.evaluation2,
-    "aggressive": minimax.evaluation3
+    "defensive": minimax.defensive_evaluation,
+    "balanced": minimax.balanced_evaluation,
+    "aggressive": minimax.aggressive_evaluation
 }
 
 # Create your views here.
