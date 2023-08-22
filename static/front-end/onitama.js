@@ -252,10 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return
         })
     });
-});
 
-// build the board, spaces, and fill the cards
-function start_a_game() {
     var board = document.getElementsByClassName("board")[0];
     board.style.backgroundImage = "url(static/images/board-background.png)";
 
@@ -318,6 +315,11 @@ function start_a_game() {
             space.querySelector(".pawn").classList.add("pawn-red-normal");
         }
     }
+});
+
+// build the board, spaces, and fill the cards
+function start_a_game() {
+    var board = document.getElementsByClassName("board")[0];
 
     // create the cards
     document.getElementById("blue_card_0").style.backgroundImage = "url(static/images/cards/" + deck[0].name + ".png)";
