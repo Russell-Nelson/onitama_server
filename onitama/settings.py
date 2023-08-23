@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+""" run command: gunicorn onitama.wsgi --bind 0.0.0.0:8000 --workers 4 --timeout 120"""
+
 from pathlib import Path
 import os
 
@@ -24,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&$e(89ha(8o!q)xtdsox^_gnmkcc)(#0dj*5bnsz*ejy=*qk*a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # TODO: add allowed host ip address here
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["3.139.220.184"]
 
 
 # Application definition

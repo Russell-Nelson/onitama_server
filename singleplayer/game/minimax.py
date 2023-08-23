@@ -159,14 +159,16 @@ def evaluation3(state):
 def defensive_evaluation(state):
     if (state.game_is_over() == "blue wins"):
         return 10
-    elif (state.game_is_over() == "red wins"):
+    if (state.game_is_over() == "red wins"):
         return -10
-    else:
-        ret_value = len(state.blue_player.pawns) - len(state.red_player.pawns)
-        for pawn in state.blue_player.pawns:
-            ret_value -= abs(pawn.coordinates[0] - 4) / 40
-            ret_value -= abs(pawn.coordinates[1] - 2) / 25
-        return ret_value
+    material = len(state.blue_player.pawns) - len(state.red_player.pawns)
+    position = 0
+    for pawn in state.blue_player.pawns:
+        if pawn.is_master and (pawn.coordinates[0] <= 1):
+            position += .1
+        if not pawn.is_master and (pawn.coordinates[0] >= 1):
+            position += .025
+    return material + (len(state.blue_player.pawns) * position)
     
 def balanced_evaluation(state):
     if (state.game_is_over() == "blue wins"):
@@ -183,14 +185,18 @@ def balanced_evaluation(state):
 def aggressive_evaluation(state):
     if (state.game_is_over() == "blue wins"):
         return 10
-    elif (state.game_is_over() == "red wins"):
+    if (state.game_is_over() == "red wins"):
         return -10
-    else:
-        ret_value = len(state.blue_player.pawns) - len(state.red_player.pawns)
-        for pawn in state.blue_player.pawns:
-            ret_value -= abs(pawn.coordinates[0] - 4) / 40
-            ret_value -= abs(pawn.coordinates[1] - 2) / 25
-        return ret_value
+    
+    material = len(state.blue_player.pawns) - len(state.red_player.pawns)
+
+    material += (1 - (len(state.red_player.pawns) * .1))
+
+    for pawn in state.blue_player.pawns:
+        if pawn.is_master:
+            material += pawn.coordinates[0] * .01
+    
+    return material
 
 
 # This algorithm is pulled from the public repo of code for the book "Artificial Intelligence: A Modern Approach"
