@@ -47,7 +47,7 @@ function shuffle(array) {
 shuffle(deck);
 
 function get_card_by_bg_image(path) {
-  let name = path.replace(`background-image: url("static/images/cards/`, "").replace(`.png");`, "");
+  let name = path.replace(`url("static/images/cards/`, "").replace(`.png")`, "");
   for (let i = 0; i < 5; i++) {
     if (deck[i].name === name) {
       return deck[i];
