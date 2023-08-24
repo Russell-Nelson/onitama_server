@@ -1,3 +1,17 @@
+# // PROBLEMS:
+# // having multiple tabs open within the same browser is a problem
+
+# // WHAT IS NEXT?
+# // when capturing a piece, the piece getting removed should look more graceful
+# // add sound for captures
+# // put more work into the evaluation functions
+# // work on the display for mobile
+# // work on scaling the display in general
+# // add a tutorial mode
+# // add drop shadows to the cards
+# // animate the hourglass dots
+
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 import json

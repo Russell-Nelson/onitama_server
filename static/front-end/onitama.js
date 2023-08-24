@@ -1,17 +1,3 @@
-// make all sizes percentage/proportion based
-// add UI for when the server is computing
-// improve UI for the end of the game
-// add drop shadows to the cards
-// fix the scaling of the background paper (load time)
-// update all textures for the new scaling fixes
-
-// add animations to the pieces
-// add a tutorial mode
-// customize the evaluation functions
-
-// PROBLEMS:
-// having multiple tabs open within the same browser is a problem
-
 
 function getCookie(name) {
     let cookieValue = null;
