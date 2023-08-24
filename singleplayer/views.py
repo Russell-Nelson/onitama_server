@@ -4,7 +4,7 @@ import json
 from .game import game_state
 from .game import move as onitama_move
 from .game import minimax
-from django import forms
+import time
 
 playstyle_dictionary = {
     "defensive": minimax.defensive_evaluation,
@@ -39,6 +39,9 @@ def user_move(request):
     if back_end_game.game_is_over():
         game_over_dict = {'winner': back_end_game.game_is_over()}
         return JsonResponse(game_over_dict)
+    
+    # start timer
+    start = time.time()
 
     computer_move = minimax.alpha_beta_cutoff_search(
         back_end_game,
@@ -62,6 +65,10 @@ def user_move(request):
     if back_end_game.game_is_over():
         computer_move_dict['winner'] = back_end_game.game_is_over()
 
+    # check timer
+    time_elapsed = time.time() - start
+    if time_elapsed < 4:
+        time.sleep(4 - time_elapsed)
     return JsonResponse(computer_move_dict)
 
 def AIsettings(request):
@@ -89,6 +96,7 @@ def setup(request):
     back_end_game = game_state.Game_state(setup_data, setup=True)
 
     if back_end_game.current_player == back_end_game.blue_player:
+        start = time.time()
         computer_move = minimax.alpha_beta_cutoff_search(
             back_end_game,
             minimax.Onitama(),
@@ -103,6 +111,9 @@ def setup(request):
         }
         computer_move.perform_move(back_end_game, back_end_game.blue_player)
         request.session['game_state'] = back_end_game.to_dict()
+        time_elapsed = time.time() - start
+        if time_elapsed < 3:
+            time.sleep(3 - time_elapsed)
         return JsonResponse(computer_move_dict)
 
     empty_dict = {'pawn': 'None'}

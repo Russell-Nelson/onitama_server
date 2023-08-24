@@ -167,7 +167,7 @@ function perform_red_move() {
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
     state.clicked_pawn.querySelector(".pawn").style.zIndex = "3";
-    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease 0s";
+    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
     state.clicked_pawn.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
 
     // start card animation
@@ -175,7 +175,7 @@ function perform_red_move() {
     var destRect = document.getElementById("middle_card_0").getBoundingClientRect();
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
-    state.clicked_card.style.transition = "transform 0.5s ease 0s";
+    state.clicked_card.style.transition = "transform 0.5s ease-out 0s";
     state.clicked_card.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
 
     // fill in empty card slot
@@ -184,7 +184,7 @@ function perform_red_move() {
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
     document.getElementById("middle_card_1").style.zIndex = "5";
-    document.getElementById("middle_card_1").style.transition = "transform 0.5s ease 0.2s";
+    document.getElementById("middle_card_1").style.transition = "transform 0.5s ease-out 0.2s";
     document.getElementById("middle_card_1").style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
     state.clear_selections();
 
@@ -209,6 +209,7 @@ function perform_red_move() {
 
         state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
         document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
+        document.getElementById("middle_card_1").classList.add("fade-in");
 
         document.getElementById("middle_card_1").removeEventListener("transitionend", handle_red_move);
 
@@ -258,7 +259,8 @@ function perform_blue_move(data) {
     var moved_card = document.getElementById(card_id);
 
     // clear the hourglass
-    document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blank.png)";
+    document.getElementById("middle_card_1").classList.remove("fade-in");
+    document.getElementById("middle_card_1").classList.add("fade-out");
 
     // start pawn animation
     var sourceRect = moved_pawn_space.querySelector(".pawn").getBoundingClientRect();
@@ -266,7 +268,7 @@ function perform_blue_move(data) {
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
     moved_pawn_space.querySelector(".pawn").style.zIndex = "3";
-    moved_pawn_space.querySelector(".pawn").style.transition = "transform 0.2s ease 0s";
+    moved_pawn_space.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
     moved_pawn_space.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
 
     // start card animation
@@ -274,7 +276,7 @@ function perform_blue_move(data) {
     var destRect = document.getElementById("middle_card_1").getBoundingClientRect();
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
-    moved_card.style.transition = "transform 0.5s ease 0s";
+    moved_card.style.transition = "transform 0.5s ease-out 0s";
     moved_card.style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
 
 
@@ -284,10 +286,11 @@ function perform_blue_move(data) {
     var dx = destRect.x - sourceRect.x;
     var dy = destRect.y - sourceRect.y;
     document.getElementById("middle_card_0").style.zIndex = "5";
-    document.getElementById("middle_card_0").style.transition = "transform 0.5s ease 0.2s";
+    document.getElementById("middle_card_0").style.transition = "transform 0.5s ease-out 0.2s";
     document.getElementById("middle_card_0").style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
 
     document.getElementById("middle_card_0").addEventListener("transitionend", function handle_blue_move() {
+        document.getElementById("middle_card_1").classList.remove("fade-out");
         moved_card.style.transition = "transform 0s linear 0s";
         moved_card.style.transform = "none";
         moved_pawn_space.querySelector(".pawn").style.zIndex = "2";
@@ -340,7 +343,7 @@ function perform_move() {
         state.clicked_dest.querySelector(".pawn").className = source_class;
         state.clicked_pawn.querySelector(".pawn").className = "pawn pawn-empty";
     });
-    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease 0s";
+    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
     state.clicked_pawn.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
 
     
@@ -354,7 +357,7 @@ function perform_move() {
         state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
         document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
     });
-    state.clicked_card.style.transition = "transform 0.3s ease 0s";
+    state.clicked_card.style.transition = "transform 0.3s ease-out 0s";
     state.clicked_card.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
 
     // send a fetch message to the server with the state
@@ -411,7 +414,7 @@ function perform_move() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    state.waiting = false;
+    state.waiting = true;
     document.getElementById("AI-settings").addEventListener("submit", (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -460,17 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
             space.appendChild(pawn_element);
         }
     }
-
-    // add the blue and red temple marks
-    // let blue_temple_space = document.getElementById("(0,2)");
-    // let blue_temple = document.createElement("div");
-    // blue_temple.setAttribute("class", "blue-temple");
-    // blue_temple_space.appendChild(blue_temple);
-
-    // let red_temple_space = document.getElementById("(4,2)");
-    // let red_temple = document.createElement("div");
-    // red_temple.setAttribute("class", "red-temple");
-    // red_temple_space.appendChild(red_temple);
 
 
     // create the blue pieces
