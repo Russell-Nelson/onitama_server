@@ -162,6 +162,14 @@ form {
     z-index: 4;
 }
 
+.results {
+    opacity: .9;
+}
+
+.results:hover {
+    opacity: 1;
+}
+
 #settings-overlay {
     justify-content: center;
     display: flex;

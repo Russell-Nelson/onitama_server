@@ -246,7 +246,20 @@ function send_to_server(move_info) {
 function perform_blue_move(data) {
     //Perform actions with the response data from the view
     if (data['winner'] === "red wins") {
-        alert("Red wins!");
+        var settings_overlay = document.createElement("div");
+        settings_overlay.id = "settings-overlay";
+        settings_overlay.style.background = "none";
+        document.querySelector("body").appendChild(settings_overlay);
+        var results_display = document.createElement("form");
+        results_display.classList.add("results");
+        settings_overlay.appendChild(results_display);
+        results_display.innerHTML = "<h1>Red Wins!</h1>";
+        var new_game = document.createElement("button");
+        new_game.type = "button";
+        new_game.classList.add("form-submit-button");
+        new_game.innerHTML = "New Game";
+        new_game.addEventListener("click", () => {window.location.reload();});
+        results_display.appendChild(new_game);
         return;
     }
 
@@ -315,11 +328,20 @@ function perform_blue_move(data) {
         document.getElementById("middle_card_0").removeEventListener("transitionend", handle_blue_move);
 
         if (data['winner'] === "blue wins") {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    alert("Blue wins!");
-                });
-            });
+            var settings_overlay = document.createElement("div");
+            settings_overlay.id = "settings-overlay";
+            settings_overlay.style.background = "none";
+            document.querySelector("body").appendChild(settings_overlay);
+            var results_display = document.createElement("form");
+            results_display.classList.add("results");
+            settings_overlay.appendChild(results_display);
+            results_display.innerHTML = "<h1>Blue Wins!</h1>";
+            var new_game = document.createElement("button");
+            new_game.type = "button";
+            new_game.classList.add("form-submit-button");
+            new_game.innerHTML = "New Game";
+            new_game.addEventListener("click", () => {window.location.reload();});
+            results_display.appendChild(new_game);
         }
         state.waiting = false;
     })
