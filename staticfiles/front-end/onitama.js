@@ -1,17 +1,3 @@
-// make all sizes percentage/proportion based
-// add UI for when the server is computing
-// improve UI for the end of the game
-// add drop shadows to the cards
-// fix the scaling of the background paper (load time)
-// update all textures for the new scaling fixes
-
-// add animations to the pieces
-// add a tutorial mode
-// customize the evaluation functions
-
-// PROBLEMS:
-// having multiple tabs open within the same browser is a problem
-
 
 function getCookie(name) {
     let cookieValue = null;
@@ -70,7 +56,7 @@ const state = {
         if (this.clicked_pawn === null || this.clicked_card === null) {
             return;
         }
-        var card = get_card_by_bg_image(state.clicked_card.getAttribute("style"));
+        var card = get_card_by_bg_image(state.clicked_card.style.backgroundImage);
 
         var pos = [parseInt(this.clicked_pawn.getAttribute("id")[1]), parseInt(this.clicked_pawn.getAttribute("id")[3])];
 
@@ -92,12 +78,19 @@ const state = {
     },
 
     clear_state() {
-        this.clicked_pawn.querySelector(".selection").className = "selection selection-empty";
+        this.clear_selections();
         this.clicked_pawn = null;
-        this.clicked_card.firstElementChild.setAttribute("class", "selection-card-empty");
         this.clicked_card = null;
         this.clicked_dest = null;
         this.update_possible_destinations();
+    },
+
+    clear_selections() {
+        this.possible_destinations.forEach(function (e) {
+            e.querySelector(".selection").className = "selection selection-empty";
+        });
+        this.clicked_pawn.querySelector(".selection").className = "selection selection-empty";
+        this.clicked_card.firstElementChild.setAttribute("class", "selection-card-empty");
     }
 }
 
@@ -115,7 +108,7 @@ function clicked_space(e) {
     if (state.possible_destinations.includes(space)) {
         state.clicked_dest = space;
         state.waiting = true;
-        perform_move();
+        perform_red_move();
     }
 }
 
@@ -147,36 +140,235 @@ function AI_settings(e) {
     })
 }
 
-function perform_move() {
-    // var sourceRect = state.clicked_pawn.querySelector(".pawn").getBoundingClientRect();
-    // var destRect = state.clicked_dest.querySelector(".pawn").getBoundingClientRect();
-    // var dx = destRect.x - sourceRect.x;
-    // var dy = destRect.y - sourceRect.y;
-    // state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s linear 0s";
-    // state.clicked_pawn.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
-
-    // move the piece
-    var source_class = state.clicked_pawn.querySelector(".pawn").getAttribute("class");
-    state.clicked_dest.querySelector(".pawn").className = source_class;
-    state.clicked_pawn.querySelector(".pawn").className = "pawn pawn-empty";
-
-    // let element2 = state.clicked_dest.querySelector(".pawn");
-    // var rect = element2.getBoundingClientRect();
-    // console.log("New position: ")
-    // console.log(rect.x + window.scrollX);
-    // console.log(rect.y + window.scrollY);
-
-    // move the cards
-    document.getElementById("middle_card_0").style.backgroundImage = state.clicked_card.style.backgroundImage;
-    state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
-    document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
-
-    // send a fetch message to the server with the state
+function perform_red_move() {
     var move_info = {
         pawn: state.clicked_pawn.getAttribute("id"),
         card: state.clicked_card.getAttribute("id"),
         dest: state.clicked_dest.getAttribute("id")
     };
+
+    // start pawn animation
+    var sourceRect = state.clicked_pawn.querySelector(".pawn").getBoundingClientRect();
+    var destRect = state.clicked_dest.querySelector(".pawn").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    state.clicked_pawn.querySelector(".pawn").style.zIndex = "3";
+    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
+    state.clicked_pawn.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // start card animation
+    var sourceRect = state.clicked_card.getBoundingClientRect();
+    var destRect = document.getElementById("middle_card_0").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    state.clicked_card.style.transition = "transform 0.5s ease-out 0s";
+    state.clicked_card.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
+
+    // fill in empty card slot
+    var sourceRect = document.getElementById("middle_card_1").getBoundingClientRect();
+    var destRect = state.clicked_card.getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    document.getElementById("middle_card_1").style.zIndex = "5";
+    document.getElementById("middle_card_1").style.transition = "transform 0.5s ease-out 0.2s";
+    document.getElementById("middle_card_1").style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
+    state.clear_selections();
+
+    document.getElementById("middle_card_1").addEventListener("transitionend", function handle_red_move() {
+        state.clicked_card.style.transition = "none";
+        state.clicked_card.style.transform = "none";
+        state.clicked_pawn.querySelector(".pawn").style.zIndex = "2";
+        state.clicked_pawn.querySelector(".pawn").style.transition = "none";
+        state.clicked_pawn.querySelector(".pawn").style.transform = "none";
+        document.getElementById("middle_card_1").style.zIndex = "3";
+        document.getElementById("middle_card_1").style.transition = "none";
+        document.getElementById("middle_card_1").style.transform = "none";
+
+        // update dom structure for the pawn
+        var source_class = state.clicked_pawn.querySelector(".pawn").getAttribute("class");
+        state.clicked_dest.querySelector(".pawn").className = source_class;
+        state.clicked_pawn.querySelector(".pawn").className = "pawn pawn-empty";
+
+        // update dom structure for the cards
+        document.getElementById("middle_card_0").style.backgroundImage = state.clicked_card.style.backgroundImage;
+        document.getElementById("middle_card_0").style.transform= "rotate(180deg)";
+
+        state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
+        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
+        document.getElementById("middle_card_1").classList.add("fade-in");
+
+        document.getElementById("middle_card_1").removeEventListener("transitionend", handle_red_move);
+
+        state.clear_state();
+
+        send_to_server(move_info);
+
+    });
+    
+    return;
+}
+
+function send_to_server(move_info) {
+    // send a fetch message to the server with the state
+    fetch("/move/", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrftoken,
+    },
+        body: JSON.stringify(move_info) //JavaScript object of data to POST
+    })
+    .then(response => {
+            return response.json() //Convert response to JSON
+    })
+    .then(data => {
+        perform_blue_move(data);
+    })
+    return;
+}
+
+function perform_blue_move(data) {
+    //Perform actions with the response data from the view
+    if (data['winner'] === "red wins") {
+        var settings_overlay = document.createElement("div");
+        settings_overlay.id = "settings-overlay";
+        settings_overlay.style.background = "none";
+        document.getElementById("wrapper").appendChild(settings_overlay);
+        var results_display = document.createElement("form");
+        results_display.classList.add("results");
+        settings_overlay.appendChild(results_display);
+        results_display.innerHTML = "<h1>Red Wins!</h1>";
+        var new_game = document.createElement("button");
+        new_game.type = "button";
+        new_game.classList.add("form-submit-button");
+        new_game.innerHTML = "New Game";
+        new_game.addEventListener("click", () => {window.location.reload();});
+        results_display.appendChild(new_game);
+        return;
+    }
+
+    var pawn_id = "(" + data["pawn"][0].toString() + "," + data["pawn"][1].toString() + ")";
+    var dest_id = "(" + data["dest"][0].toString() + "," + data["dest"][1].toString() + ")";
+    var card_id = data["card"];
+
+    var moved_pawn_space = document.getElementById(pawn_id);
+    var dest_space = document.getElementById(dest_id);
+    var moved_card = document.getElementById(card_id);
+
+    // clear the hourglass
+    document.getElementById("middle_card_1").classList.remove("fade-in");
+    document.getElementById("middle_card_1").classList.add("fade-out");
+
+    // start pawn animation
+    var sourceRect = moved_pawn_space.querySelector(".pawn").getBoundingClientRect();
+    var destRect = dest_space.querySelector(".pawn").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    moved_pawn_space.querySelector(".pawn").style.zIndex = "3";
+    moved_pawn_space.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
+    moved_pawn_space.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // start card animation
+    var sourceRect = moved_card.getBoundingClientRect();
+    var destRect = document.getElementById("middle_card_1").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    moved_card.style.transition = "transform 0.5s ease-out 0s";
+    moved_card.style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
+
+
+    // fill in empty card slot
+    var sourceRect = document.getElementById("middle_card_0").getBoundingClientRect();
+    var destRect = moved_card.getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    document.getElementById("middle_card_0").style.zIndex = "5";
+    document.getElementById("middle_card_0").style.transition = "transform 0.5s ease-out 0.2s";
+    document.getElementById("middle_card_0").style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
+
+    document.getElementById("middle_card_0").addEventListener("transitionend", function handle_blue_move() {
+        document.getElementById("middle_card_1").classList.remove("fade-out");
+        moved_card.style.transition = "transform 0s linear 0s";
+        moved_card.style.transform = "none";
+        moved_pawn_space.querySelector(".pawn").style.zIndex = "2";
+        moved_pawn_space.querySelector(".pawn").style.transition = "transform 0s linear 0s";
+        moved_pawn_space.querySelector(".pawn").style.transform = "none";
+        document.getElementById("middle_card_0").style.zIndex = "3";
+        document.getElementById("middle_card_0").style.transition = "transform 0s linear 0s";
+        document.getElementById("middle_card_0").style.transform = "none";
+
+        // update dom structure for the pawn
+        var pawn_class = moved_pawn_space.querySelector(".pawn").getAttribute("class");
+        dest_space.querySelector(".pawn").className = pawn_class;
+        moved_pawn_space.querySelector(".pawn").className = "pawn pawn-empty";
+
+
+        // update dom structure for the cards
+        document.getElementById("middle_card_1").style.backgroundImage = moved_card.style.backgroundImage;
+        moved_card.style.backgroundImage = document.getElementById("middle_card_0").style.backgroundImage;
+        moved_card.style.transform = "rotate(180deg)";
+        document.getElementById("middle_card_0").style.backgroundImage = "url(static/images/cards/blank.png)";
+
+        document.getElementById("middle_card_0").removeEventListener("transitionend", handle_blue_move);
+
+        if (data['winner'] === "blue wins") {
+            var settings_overlay = document.createElement("div");
+            settings_overlay.id = "settings-overlay";
+            settings_overlay.style.background = "none";
+            document.getElementById("wrapper").appendChild(settings_overlay);
+            var results_display = document.createElement("form");
+            results_display.classList.add("results");
+            settings_overlay.appendChild(results_display);
+            results_display.innerHTML = "<h1>Blue Wins!</h1>";
+            var new_game = document.createElement("button");
+            new_game.type = "button";
+            new_game.classList.add("form-submit-button");
+            new_game.innerHTML = "New Game";
+            new_game.addEventListener("click", () => {window.location.reload();});
+            results_display.appendChild(new_game);
+        }
+        state.waiting = false;
+    })
+    return;
+}
+
+function perform_move() {
+    var move_info = {
+        pawn: state.clicked_pawn.getAttribute("id"),
+        card: state.clicked_card.getAttribute("id"),
+        dest: state.clicked_dest.getAttribute("id")
+    };
+
+    var sourceRect = state.clicked_pawn.querySelector(".pawn").getBoundingClientRect();
+    var destRect = state.clicked_dest.querySelector(".pawn").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    state.clicked_pawn.querySelector(".pawn").addEventListener("transitionend", (event) => {
+        // move the piece
+        var source_class = state.clicked_pawn.querySelector(".pawn").getAttribute("class");
+        state.clicked_dest.querySelector(".pawn").className = source_class;
+        state.clicked_pawn.querySelector(".pawn").className = "pawn pawn-empty";
+    });
+    state.clicked_pawn.querySelector(".pawn").style.transition = "transform 0.2s ease-out 0s";
+    state.clicked_pawn.querySelector(".pawn").style.transform = `translate(${dx}px, ${dy}px)`;
+
+    
+    var sourceRect = state.clicked_card.getBoundingClientRect();
+    var destRect = document.getElementById("middle_card_0").getBoundingClientRect();
+    var dx = destRect.x - sourceRect.x;
+    var dy = destRect.y - sourceRect.y;
+    state.clicked_card.addEventListener("transitionend", (event) => {
+        // move the cards
+        document.getElementById("middle_card_0").style.backgroundImage = state.clicked_card.style.backgroundImage;
+        state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
+        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
+    });
+    state.clicked_card.style.transition = "transform 0.3s ease-out 0s";
+    state.clicked_card.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
+
+    // send a fetch message to the server with the state
     fetch("/move/", {
         method: 'POST',
         credentials: 'same-origin',
@@ -230,6 +422,7 @@ function perform_move() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    state.waiting = true;
     document.getElementById("AI-settings").addEventListener("submit", (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -278,17 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
             space.appendChild(pawn_element);
         }
     }
-
-    // add the blue and red temple marks
-    let blue_temple_space = document.getElementById("(0,2)");
-    let blue_temple = document.createElement("div");
-    blue_temple.setAttribute("class", "blue-temple");
-    blue_temple_space.appendChild(blue_temple);
-
-    let red_temple_space = document.getElementById("(4,2)");
-    let red_temple = document.createElement("div");
-    red_temple.setAttribute("class", "red-temple");
-    red_temple_space.appendChild(red_temple);
 
 
     // create the blue pieces
@@ -365,25 +547,10 @@ function start_a_game() {
     })
     .then(data => {
         if (data["pawn"] === "None") {
+            state.waiting = false;
             return
         }
-        //Perform actions with the response data from the view
-        var pawn_id = "(" + data["pawn"][0].toString() + "," + data["pawn"][1].toString() + ")";
-        var dest_id = "(" + data["dest"][0].toString() + "," + data["dest"][1].toString() + ")";
-        var card_id = data["card"];
-
-        var moved_pawn_space = document.getElementById(pawn_id);
-        var dest_space = document.getElementById(dest_id);
-
-        var pawn_class = moved_pawn_space.querySelector(".pawn").getAttribute("class");
-        dest_space.querySelector(".pawn").className = pawn_class;
-        moved_pawn_space.querySelector(".pawn").className = "pawn pawn-empty";
-
-        var moved_card = document.getElementById(card_id);
-        document.getElementById("middle_card_1").style.backgroundImage = moved_card.style.backgroundImage;
-        moved_card.style.backgroundImage = document.getElementById("middle_card_0").style.backgroundImage;
-        document.getElementById("middle_card_0").style.backgroundImage = "url(static/images/cards/blank.png)";
-
+        perform_blue_move(data);
         
         return
     })
