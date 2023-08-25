@@ -1,11 +1,12 @@
 .pawn {
-    background-position: top left;
+    background-position: center;
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
     z-index: 2;
     position: absolute;
     top: 0%;
+    background-size: 215%;
 }
 
 .pawn-empty {
@@ -32,24 +33,25 @@ body {
     background-image: url("images/paper.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
-    margin-top: 100px;
+    margin: 2.75vh 0vh;
+    background-size: cover;
 }
 
 .board {
     display: grid;
     grid-template-rows: repeat(5, auto);
     grid-template-columns: repeat(5, auto);
-    gap: 0px;
-    margin: 0px 20px 0px 20px;
-    padding: 10px;
-    width: 334px;
-    height: 334px;
+    gap: .5vh;
+    margin: 0vh 4vh;
+    padding: 1.8vh;
+    width: 57.3vh;
+    height: 57.3vh;
     /* background-color: #2e2e23; */
     /* background-image: url("images/board-background.png");
     /* border-style: solid;
     border-width: 9px;
     border-color: #2e2e23; */
-    border-radius: 15px;
+    border-radius: 2.83vh;
 }
 
 .space {
@@ -60,8 +62,9 @@ body {
     /* background-color: #bda377; */
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 12px;
-    margin: 0px;
+    border-radius: 8%;
+    margin: 0;
+    background-size: contain;
 }
 
 /* .blue-temple {
@@ -80,12 +83,13 @@ body {
 }
 
 .card {
-    width:150px;
-    height:90px;
+    width:25vh;
+    height:15vh;
     background-position: center;
     background-repeat: no-repeat;
-    margin: 5px;
+    margin: 1.5vh 1vh;
     z-index: 3;
+    background-size: contain;
 }
 
 
@@ -112,6 +116,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+    background-size: contain;
 }
 
 .selection-pawn {
@@ -122,6 +127,7 @@ body {
     height: 100%;
     z-index: 1;
     position: absolute;
+    background-size: 100%;
 }
 
 .selection-dest {
@@ -131,6 +137,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+    background-size: 100%;
 }
 
 .selection-card-empty {
@@ -139,6 +146,7 @@ body {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
+    background-size:contain;
 }
 
 .selection-card-red {
@@ -147,6 +155,7 @@ body {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
+    background-size:103%;
 }
 
 /* Form styling */
@@ -268,4 +277,12 @@ group.radio label, group.radio .label {
 	100% {
 		opacity: 0;
 	}
+}
+
+
+
+/* RESPONSIVE TESTING */
+
+#wrapper {
+    width: 100%;
 }

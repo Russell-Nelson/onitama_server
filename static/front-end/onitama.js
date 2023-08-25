@@ -235,7 +235,7 @@ function perform_blue_move(data) {
         var settings_overlay = document.createElement("div");
         settings_overlay.id = "settings-overlay";
         settings_overlay.style.background = "none";
-        document.querySelector("body").appendChild(settings_overlay);
+        document.getElementById("wrapper").appendChild(settings_overlay);
         var results_display = document.createElement("form");
         results_display.classList.add("results");
         settings_overlay.appendChild(results_display);
@@ -317,7 +317,7 @@ function perform_blue_move(data) {
             var settings_overlay = document.createElement("div");
             settings_overlay.id = "settings-overlay";
             settings_overlay.style.background = "none";
-            document.querySelector("body").appendChild(settings_overlay);
+            document.getElementById("wrapper").appendChild(settings_overlay);
             var results_display = document.createElement("form");
             results_display.classList.add("results");
             settings_overlay.appendChild(results_display);
