@@ -479,6 +479,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (i == 2) {
             space.querySelector(".pawn").classList.remove("pawn-empty");
             space.querySelector(".pawn").classList.add("pawn-blue-master");
+            var blue_temple = document.createElement("div");
+            blue_temple.classList.add("blue-temple");
+            space.appendChild(blue_temple);
         }
         else {
             space.querySelector(".pawn").classList.remove("pawn-empty");
@@ -492,6 +495,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (i == 2) {
             space.querySelector(".pawn").classList.remove("pawn-empty");
             space.querySelector(".pawn").classList.add("pawn-red-master");
+            var red_temple = document.createElement("div");
+            red_temple.classList.add("red-temple");
+            space.appendChild(red_temple);
         }
         else {
             space.querySelector(".pawn").classList.remove("pawn-empty");
