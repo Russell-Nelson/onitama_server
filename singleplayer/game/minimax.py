@@ -180,7 +180,14 @@ def balanced_evaluation(state):
         for pawn in state.blue_player.pawns:
             ret_value -= abs(pawn.coordinates[0] - 4) / 40
             ret_value -= abs(pawn.coordinates[1] - 2) / 25
-        return ret_value
+     
+aggressive_table = [
+    [0, 0, 0, 0, 0],
+    [0, .05, .1, .05, 0],
+    [.1, .15, .2, .15, .1],
+    [.15, .2, .2, .2, .15],
+    [0, .1, 0, .1, 0]
+]
 
 def aggressive_evaluation(state):
     if (state.game_is_over() == "blue wins"):
@@ -188,15 +195,15 @@ def aggressive_evaluation(state):
     if (state.game_is_over() == "red wins"):
         return -10
     
-    material = len(state.blue_player.pawns) - len(state.red_player.pawns)
+    blue_numb = len(state.blue_player.pawns)
+    material = blue_numb - len(state.red_player.pawns)
 
-    material += (1 - (len(state.red_player.pawns) * .1))
+    ret_value = 2 * material + .33 * (5 - blue_numb)
 
     for pawn in state.blue_player.pawns:
-        if pawn.is_master:
-            material += pawn.coordinates[0] * .01
+        ret_value += aggressive_table[pawn.coordinates[0]][pawn.coordinates[1]]
     
-    return material
+    return ret_value
 
 
 # This algorithm is pulled from the public repo of code for the book "Artificial Intelligence: A Modern Approach"
