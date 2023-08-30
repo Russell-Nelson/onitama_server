@@ -180,6 +180,7 @@ def balanced_evaluation(state):
         for pawn in state.blue_player.pawns:
             ret_value -= abs(pawn.coordinates[0] - 4) / 40
             ret_value -= abs(pawn.coordinates[1] - 2) / 25
+    return ret_value
      
 aggressive_table = [
     [0, 0, 0, 0, 0],
