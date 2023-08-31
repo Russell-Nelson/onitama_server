@@ -302,6 +302,23 @@ group.radio label, group.radio .label {
 	}
 }
 
+.hourglass {
+    animation-name: hourglassDots;
+	animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation: hourglassDots 4s steps(4) infinite;
+    background-size: auto 14.1svh;
+}
+
+@keyframes hourglassDots {
+    from {
+        background-position: 0svh;
+    }
+    to {
+        background-position: -112.8svh;
+    }
+}
+
 
 /* RESPONSIVE TESTING */
 

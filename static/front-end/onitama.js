@@ -194,7 +194,8 @@ function perform_red_move() {
         document.getElementById("middle_card_0").style.transform= "rotate(180deg)";
 
         state.clicked_card.style.backgroundImage = document.getElementById("middle_card_1").style.backgroundImage;
-        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass.png)";
+        document.getElementById("middle_card_1").style.backgroundImage = "url(static/images/cards/blue-hourglass-sheet.png)";
+        document.getElementById("middle_card_1").classList.add("hourglass");
         document.getElementById("middle_card_1").classList.add("fade-in");
 
         document.getElementById("middle_card_1").removeEventListener("transitionend", handle_red_move);
@@ -290,6 +291,7 @@ function perform_blue_move(data) {
 
     document.getElementById("middle_card_0").addEventListener("transitionend", function handle_blue_move() {
         document.getElementById("middle_card_1").classList.remove("fade-out");
+        document.getElementById("middle_card_1").classList.remove("hourglass");
         moved_card.style.transition = "transform 0s linear 0s";
         moved_card.style.transform = "none";
         moved_pawn_space.querySelector(".pawn").style.zIndex = "2";
