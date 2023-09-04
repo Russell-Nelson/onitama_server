@@ -64,19 +64,25 @@
                 <div class="card rotated" id="blue_card_1"></div>
             </div>
             <div class="game-space">
-                <div class="card middle" id="middle_card_0"></div>
+                <div class="card middle rotated" id="middle_card_0"></div>
                 <div class="board"></div>
-                <div class="card middle" id="middle_card_1"></div>
+                <div class="card middle" id="middle_card_1">
+                    <div id="hourglass"></div>
+                </div>
             </div>
             <div class="player-hand">
-                <div class="card" id="red_card_0">
+                <div class="card red-card" id="red_card_0">
                     <div class="selection-card-empty"></div>
                 </div>
-                <div class="card" id="red_card_1">
+                <div class="card red-card" id="red_card_1">
                     <div class="selection-card-empty"></div>
                 </div>
             </div>
         </div>
         <div id="rotate-icon"></div>
+        <div id="game-history" class="game-history">
+            <img src="static/images/step-symbol.png" class="backward" id="backward" />
+            <img src="static/images/step-symbol.png" class="forward" id="forward" />
+        </div>
     </body>
 </html>

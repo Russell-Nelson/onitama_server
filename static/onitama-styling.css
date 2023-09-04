@@ -7,6 +7,7 @@
     position: absolute;
     top: 0%;
     background-size: 225%;
+    pointer-events: none;
 }
 
 .pawn-empty {
@@ -23,10 +24,20 @@
 
 .pawn-red-master {
     background-image: url("images/pawns/red_master_pawn.png");
+    pointer-events: revert;
+}
+
+.pawn-red-master:hover {
+    cursor: pointer;
 }
 
 .pawn-red-normal {
     background-image: url("images/pawns/red_pawn.png");
+    pointer-events: revert;
+}
+
+.pawn-red-normal:hover {
+    cursor: pointer;
 }
 
 body {
@@ -107,6 +118,10 @@ body {
     aspect-ratio: 15/9;
 }
 
+.red-card:hover {
+    cursor: pointer;
+}
+
 
 .player-hand {
     display: flex;
@@ -143,6 +158,7 @@ body {
 
 .selection-pawn {
     background-image: url("images/selections/red-pawn-selected.png");
+    background-color: rgba(17.7, 17.6, 13.6, .2);
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
@@ -150,7 +166,6 @@ body {
     z-index: 1;
     position: absolute;
     background-size: 100%;
-    border-radius: 18%;
 }
 
 .selection-dest {
@@ -161,6 +176,12 @@ body {
     height: 100%;
     z-index: 1;
     background-size: 100%;
+    position: absolute;
+}
+
+.selection-dest:hover {
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+    cursor: pointer;
 }
 
 .selection-card-empty {
@@ -195,7 +216,7 @@ form {
 }
 
 .results {
-    opacity: .9;
+    opacity: .8;
 }
 
 .results:hover {
@@ -268,14 +289,6 @@ group.radio label, group.radio .label {
     cursor: pointer;
 }
 
-.fade-in {
-	opacity: 1;
-	animation-name: fadeInOpacity;
-	animation-iteration-count: 1;
-	animation-timing-function: ease-out;
-	animation-duration: .2s;
-}
-
 @keyframes fadeInOpacity {
 	0% {
 		opacity: 0;
@@ -285,40 +298,21 @@ group.radio label, group.radio .label {
 	}
 }
 
-.fade-out {
-	opacity: 0;
-	animation-name: fadeOutOpacity;
-	animation-iteration-count: 1;
-	animation-timing-function: ease-out;
-	animation-duration: .2s;
-}
-
-@keyframes fadeOutOpacity {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
-.hourglass {
-    animation-name: hourglassDots;
-	animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation: hourglassDots 4s steps(4) infinite;
-    background-size: auto 14.1svh;
+.hourglass-show {
+    background-image: url("images/cards/blue-hourglass-three-dot.png");
+    background-size: cover;
+    height: 100%;
+    animation: hourglassDots 4s steps(4) infinite, fadeInOpacity .5s linear 1;
 }
 
 @keyframes hourglassDots {
     from {
-        background-position: 0svh;
+        width: 60%;
     }
     to {
-        background-position: -112.8svh;
+        width: 100%;
     }
 }
-
 
 /* RESPONSIVE TESTING */
 
@@ -358,4 +352,40 @@ group.radio label, group.radio .label {
         left: 50%;
         transform: translate(-50%, -50%);        
     }
+}
+
+.game-history {
+    background: url("images/board-background.png");
+    position: fixed;
+    left: 8svh;
+    top: 6svh;
+    height: 6svh;
+    padding: .5svh;
+    border-radius: 1svh;
+    opacity: 60%;
+}
+
+.game-history:hover {
+    opacity: 100%;
+}
+
+.forward {
+    height: 4svh;
+    margin: 1svh;
+    opacity: 40%;
+}
+
+.backward {
+    height: 4svh;
+    transform: rotate(180deg);
+    margin: 1svh;
+    opacity: 40%;
+}
+
+.step-able {
+    opacity: 100%;
+}
+
+.step-able:hover {
+    cursor: pointer;
 }

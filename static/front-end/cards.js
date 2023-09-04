@@ -1,8 +1,8 @@
 class Card {
     constructor(name, starting_color, movement_count, movements) {
         this.name = name;
-        this.starting_color = starting_color;
-        this.movement_count = movement_count;
+        this.startingColor = starting_color;
+        this.movementCount = movement_count;
         this.movements = movements;
     }
 }
@@ -46,7 +46,7 @@ function shuffle(array) {
   
 shuffle(deck);
 
-function get_card_by_bg_image(path) {
+function getCardByBgImage(path) {
   let name = path.replace(/.*cards\//, "").replace(`.png")`, "");
   for (let i = 0; i < 5; i++) {
     if (deck[i].name === name) {

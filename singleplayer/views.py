@@ -36,11 +36,11 @@ def user_move(request):
     back_end_game = game_state.Game_state(json_game, setup=False)
     global game_structure
     move_data = json.load(request)
-    # move_data example: {'pawn': '(4,3)', 'card': 'red_card_0', 'dest': '(3,4)'}
-    dest_row = int(move_data['dest'][1])
-    dest_column = int(move_data['dest'][3])
-    pawn_row = int(move_data['pawn'][1])
-    pawn_column = int(move_data['pawn'][3])
+    # move_data example: {'pawn': '43', 'card': 'red_card_0', 'dest': '34'}
+    dest_row = int(move_data['dest'][0])
+    dest_column = int(move_data['dest'][1])
+    pawn_row = int(move_data['pawn'][0])
+    pawn_column = int(move_data['pawn'][1])
     card_index = int(move_data['card'][-1])
     card = back_end_game.red_player.hand[card_index]
     movement_index = card.get_movement_index((pawn_row, pawn_column), (dest_row, dest_column))
@@ -65,12 +65,12 @@ def user_move(request):
     )
     movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
 
-    # move_data example: {'pawn': '(4,3)', 'card': 'red_card_0', 'dest': '(3,4)'}\
+    # move_data example: {'pawn': '43', 'card': 'red_card_0', 'dest': '34'}\
     computer_move_dict = {
         'winner': 'None',
-        'pawn': (computer_move.piece_row,computer_move.piece_column),
+        'pawn': str(computer_move.piece_row) + str(computer_move.piece_column),
         'card': 'blue_card_' + str(computer_move.card_index),
-        'dest': (computer_move.piece_row - movement_tuple[0],computer_move.piece_column - movement_tuple[1])
+        'dest': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
     }
 
     computer_move.perform_move(back_end_game, back_end_game.blue_player)
@@ -119,9 +119,9 @@ def setup(request):
         )
         movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
         computer_move_dict = {
-            'pawn': (computer_move.piece_row,computer_move.piece_column),
+            'pawn': str(computer_move.piece_row) + str(computer_move.piece_column),
             'card': 'blue_card_' + str(computer_move.card_index),
-            'dest': (computer_move.piece_row - movement_tuple[0],computer_move.piece_column - movement_tuple[1])
+            'dest': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
         }
         computer_move.perform_move(back_end_game, back_end_game.blue_player)
         request.session['game_state'] = back_end_game.to_dict()
