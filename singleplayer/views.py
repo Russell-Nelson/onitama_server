@@ -27,8 +27,11 @@ playstyle_dictionary = {
 }
 
 # Create your views here.
-def index(request):
-    return render(request, "singleplayer/index.html")
+def home(request):
+    return render(request, "singleplayer/home.html")
+
+def game(request):
+    return render(request, "singleplayer/game.html")
 
 # https://www.brennantymrak.com/articles/fetching-data-with-ajax-and-django
 def user_move(request):

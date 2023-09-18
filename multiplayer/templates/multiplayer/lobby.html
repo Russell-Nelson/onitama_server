@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Open Games</title>
+</head>
+<body>
+    <h2>Open Games</h2>
+    <ul>
+        {% for game in games %}
+            <li>Game {{ game.id }}: {{ game.owner }} playing {{ game.opponent }}</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="{% url 'multiplayer:create' %}">Create a Game</a>
+
+    <ul>
+        {% for game in games %}
+            <li>
+                <a href="{% url 'multiplayer:join' game_id=game.id %}">Game {{ game.id }}: {{ game.owner }} playing {{ game.opponent }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

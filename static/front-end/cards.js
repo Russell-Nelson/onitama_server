@@ -46,9 +46,17 @@ function shuffle(array) {
   
 shuffle(deck);
 
+function getCardByName(name) {
+  for (let i = 0; i < deck.length; i++) {
+    if (deck[i].name === name) {
+      return deck[i];
+    }
+  }
+}
+
 function getCardByBgImage(path) {
   let name = path.replace(/.*cards\//, "").replace(`.png")`, "");
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < deck.length; i++) {
     if (deck[i].name === name) {
       return deck[i];
     }
