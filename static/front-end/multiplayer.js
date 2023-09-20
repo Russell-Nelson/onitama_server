@@ -236,15 +236,15 @@ document.addEventListener('DOMContentLoaded', () => {
             space.onclick = clickedSpace;
             board.appendChild(space);
 
-            let selection_element = document.createElement("div");
-            selection_element.classList.add("selection");
-            selection_element.classList.add("selection-empty");
-            space.appendChild(selection_element);
-
             let pawn_element = document.createElement("div");
             pawn_element.classList.add("pawn");
             pawn_element.classList.add("pawn-empty");
             space.appendChild(pawn_element);
+
+            let selection_element = document.createElement("div");
+            selection_element.classList.add("selection");
+            selection_element.classList.add("selection-empty");
+            space.appendChild(selection_element);
         }
     }
 
@@ -329,6 +329,22 @@ function fillCards(data) {
     }
 }
 
+function fillNames(data) {
+    ownerName = data["ownerName"];
+    opponentName = data["opponentName"];
+    document.getElementById("vs").innerHTML = "VS";
+    if (isOwner) {
+        document.getElementById("user-tag").innerHTML = ownerName;
+        document.getElementById("opponent-tag").innerHTML = opponentName;
+        document.querySelector("title").innerHTML = "Onitama vs " + opponentName;
+    }
+    else {
+        document.getElementById("user-tag").innerHTML = opponentName;
+        document.getElementById("opponent-tag").innerHTML = ownerName;
+        document.querySelector("title").innerHTML = "Onitama vs " + ownerName;
+    }
+}
+
 function checkForWin(sourceId, targetId) {
     var targetClass = getPawnElement(document.getElementById(targetId)).className;
     if (targetClass.includes(opponentMaster)) {
@@ -399,15 +415,15 @@ function performMove(data) {
     animateCard(playedCard, destCard, rotateFlag, 0);
     animateCard(fillCard, playedCard, !rotateFlag, .2);
     fillCard.addEventListener("transitionend", function finishMove() {
-        getCard("middle_card_1").removeEventListener("transitionend", finishMove);
+        this.removeEventListener("transitionend", finishMove);
         selectionState.clear();
-        if (winningColor != "none") {
-            selectionState.waiting = true;
-            alert(winningColor + "wins!");
-            return;
-        }
         if (color != userColor) {
             selectionState.waiting = false;
+        }
+        if (winningColor != "none") {
+            selectionState.waiting = true;
+            alert(winningColor + " wins!");
+            return;
         }
     });
 }
@@ -415,8 +431,11 @@ function performMove(data) {
 gameSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
 
-    if (data["type"] === "setup" && isOwner) {
-        drawCards();
+    if (data["type"] === "setup") {
+        fillNames(data);
+        if (isOwner) {
+            drawCards();
+        }
         return;
     }
 

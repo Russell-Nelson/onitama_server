@@ -32,6 +32,14 @@
     cursor: pointer;
 }
 
+.pawn:hover + .selection-dest-blue {
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+}
+
+.pawn:hover + .selection-dest-red {
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+}
+
 .pawn-red-master {
     background-image: url("images/pawns/red_master_pawn.png");
     pointer-events: revert;
@@ -435,4 +443,29 @@ group.radio label, group.radio .label {
 
 .step-able:hover {
     cursor: pointer;
+}
+
+
+/* SIDEBAR STUFF */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100svh;
+    background: url("images/board-background.png");
+    font-family: "Noto Sans",Sans-Serif;
+    padding: 14px;
+}
+
+.sidebar a {
+    color: #d6d6d6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sidebar p {
+    color: #d6d6d6;
+    font-weight: bold;
+    text-align:center;
 }

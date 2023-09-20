@@ -27,8 +27,8 @@ class GameConsumer(WebsocketConsumer):
             game.status = 2
             game.save()
             async_to_sync(self.channel_layer.group_send)(
-            self.game_group_name, {"type": "setup"}
-        )
+            self.game_group_name, {"type": "setup", "ownerName": game.owner.username, "opponentName": game.opponent.username}
+            )
 
     def disconnect(self, close_code):
         # Leave room group
@@ -38,9 +38,7 @@ class GameConsumer(WebsocketConsumer):
         pass
 
     def setup(self, event):
-        self.send(text_data=json.dumps({"type": "setup"}))
-
-
+        self.send(text_data=json.dumps(event))
 
     # Receive message from WebSocket
     def receive(self, text_data):
@@ -54,15 +52,11 @@ class GameConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
             self.game_group_name, text_data_json
         )
-        return
-        color = text_data_json["color"]
-        source = text_data_json["source"]
-        target = text_data_json["target"]
-
-        # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
-            self.game_group_name, {"type": "movement", "source": source, "target": target, "color": color}
+        if text_data_json['type'] == 'interrupt':
+            async_to_sync(self.channel_layer.group_send)(
+            self.game_group_name, text_data_json
         )
+        return
 
     # Receive message from room group
     def move(self, data):
@@ -71,6 +65,9 @@ class GameConsumer(WebsocketConsumer):
     
     def cards(self, event):
         self.send(text_data=json.dumps(event))
+
+    def names(self, data):
+        self.send(text_data=json.dumps(data))
 
 
 class ChatConsumer(WebsocketConsumer):

@@ -16,6 +16,7 @@
             const opponentColor = "{{ opponent_color }}";
             const gameId = "{{ game_id }}";
             const isOwner = "{{ is_owner}}" === "true";
+            const userName = "{{ username}}"
         </script>
         <script src="{% static 'front-end/cards.js' %}"></script>
         <script src="{% static 'front-end/multiplayer.js' %}"></script>
@@ -38,6 +39,21 @@
                 <div class="card user-card" id="user_card_1">
                     <div class="selection-card-empty"></div>
                 </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <a href="{% url 'singleplayer:home' %}">Home</a>
+            <br>
+            <a href="{% url 'singleplayer:game' %}">Singleplayer</a>
+            <br>
+            <a href="{% url 'multiplayer:lobby' %}">Multiplayer</a>
+            <br>
+            <br>
+            <br>
+            <div class="vs-summary">
+                <p id="opponent-tag" class = "username"></p>
+                <p id="vs">Waiting for opponent</p>
+                <p id="user-tag" class = "username"></p>
             </div>
         </div>
     </body>
