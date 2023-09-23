@@ -12,6 +12,9 @@ def lobby(request):
         "games": MultiplayerGame.objects.filter(status=1)
     })
 
+def test(request):
+    return render(request, "multiplayer/designtest.html")
+
 def room(request, room_name):
     return render(request, "multiplayer/room.html", {"room_name": room_name})
 
@@ -19,6 +22,8 @@ def room(request, room_name):
 def game(request, game_id):
     game = MultiplayerGame.objects.get(pk=game_id)
     colors = ["red", "blue"]
+    username = request.user.username
+    rating = 1388 # TODO: update ratings in usernames
     if request.user == game.owner:
         is_owner = "true"
         user_color = game.owner_color
@@ -34,7 +39,9 @@ def game(request, game_id):
                   {"game_id": game_id, 
                    "user_color": user_color,
                    "opponent_color": opponent_color,
-                   "is_owner": is_owner})
+                   "is_owner": is_owner,
+                   "username": username,
+                   "rating": rating})
 
 @login_required
 def create(request):

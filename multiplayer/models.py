@@ -1,11 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+from accounts.models import OnitamaUser
 import uuid
 
 class MultiplayerGame(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE,related_name="owner")
-    opponent = models.ForeignKey(User, on_delete=models.CASCADE,related_name="opponent", null=True)
+    owner = models.ForeignKey(OnitamaUser, on_delete=models.CASCADE,related_name="owner")
+    opponent = models.ForeignKey(OnitamaUser, on_delete=models.CASCADE,related_name="opponent", null=True)
     owner_color= models.CharField(max_length=10)
     owner_online = models.BooleanField(default=False)
     opponent_online = models.BooleanField(default=False)
@@ -15,3 +15,11 @@ class MultiplayerGame(models.Model):
         (2,"Started"),
         (3,"Ended"))
     status = models.IntegerField(default=1,choices=CHOICES)
+
+    def setWinner(self, winner):
+        if winner == "owner":
+            self.owner.rating += 1
+            self.opponent.rating -= 1
+        else:
+            self.owner.rating -= 1
+            self.opponent.rating += 1

@@ -9,13 +9,16 @@ class GameConsumer(WebsocketConsumer):
         self.game_id = self.scope["url_route"]["kwargs"]["game_id"]
         self.game_group_name = "multiplayer_%s" % self.game_id
 
+        user = self.scope["user"]
+        game = MultiplayerGame.objects.get(pk=self.game_id)
+        if (game.status != 1):
+            return
+        
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
         )
-
-        user = self.scope["user"]
-        game = MultiplayerGame.objects.get(pk=self.game_id)
+        
         if user == game.owner:
             game.owner_online = True
         elif user == game.opponent:
@@ -31,6 +34,18 @@ class GameConsumer(WebsocketConsumer):
             )
 
     def disconnect(self, close_code):
+        game = MultiplayerGame.objects.get(pk=self.game_id)
+        if (game.status == 1):
+            game.status = 3
+        elif (game.status == 2):
+            # send disconnect game winning message
+            game.status = 3
+            user = self.scope["user"]
+            if (game.owner == user):
+                game.winner = "opponent"
+            else:
+                game.winner = "owner"
+            game.save()
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.game_group_name, self.channel_name
@@ -56,6 +71,10 @@ class GameConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
             self.game_group_name, text_data_json
         )
+        if text_data_json['type'] == 'game_over':
+            async_to_sync(self.channel_layer.group_send)(
+            self.game_group_name, text_data_json
+        )
         return
 
     # Receive message from room group
@@ -68,6 +87,14 @@ class GameConsumer(WebsocketConsumer):
 
     def names(self, data):
         self.send(text_data=json.dumps(data))
+    
+    def game_over(self, data):       
+        game = MultiplayerGame.objects.get(pk=self.game_id)
+        game.winner = data["winner"]
+        game.status = 3
+        game.save()
+        # TODO: change to setWinner and ratings calculations within models
+
 
 
 class ChatConsumer(WebsocketConsumer):

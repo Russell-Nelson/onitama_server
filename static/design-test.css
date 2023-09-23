@@ -1,0 +1,286 @@
+* {
+    box-sizing: border-box;
+  }
+
+body {
+    margin: 0px;
+    min-height: 100vh;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #c5c5c5;
+    background: url("images/testing/background-light-black.jpg");
+}
+
+.sidebar {
+    background-color:rgba(0,0,0,0.35);
+    min-height: 100vh;
+    z-index: 2;
+}
+
+.sidebar-left {
+    width: 16%;
+    border-image: url("images/testing/border-right.jpg");
+    border-image-slice: 10% 100% 10% 0;
+    border-image-width: 9%;
+    border-image-repeat: repeat;
+}
+
+.sidebar-right {
+    width: 20%;
+    border-image: url("images/testing/border-left.jpg");
+    border-image-slice: 10% 0 10% 100%;
+    border-image-width: 7.2%;
+    border-image-repeat: repeat;
+    padding-left: 2.7%;
+    padding-top: 2.2%;
+    padding-right: 1.4%;
+    padding-bottom: 2.2%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+}
+
+/* WITHIN LEFT SIDEBAR */
+.page-links {
+    font-size: 130%;
+    font-weight: 700;
+    list-style-type: none;
+    padding-left: 7%;
+    margin-top: 7%;
+}
+
+.logo {
+    font-weight: 900;
+    font-size: 160%;
+}
+
+.page-links li:not(:last-child) {
+    margin-bottom: 4%;
+}
+
+/* WITHIN RIGHT SIDEBAR */
+.user {
+    display: grid;
+    grid-template-columns: 16.5% auto;
+    column-gap: 6%;
+}
+
+.user .color-icon {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    aspect-ratio: 1;
+    width: 100%;
+    opacity: .7;
+}
+
+.user.active .color-icon {
+    animation-name: reminder;
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.user.history-standby .color-icon {
+    animation-name: none;
+    opacity: .15;
+}
+
+.user .name {
+    font-weight: 700;
+}
+
+.user .rating {
+    font-weight: 500;
+}
+
+.chat {
+    background-color: rgba(210, 210, 210, 0.1);
+    height: 60vh;
+    border-radius: 5%;
+    padding: 3.5%;
+}
+
+.game-history {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    height: 6vh;
+}
+
+.step {
+    opacity: .15;
+    margin-right: 7%;
+    margin-left: 7%;
+}
+
+.step.active:hover {
+    cursor: pointer;
+}
+
+#step_backward {
+    transform: rotate(180deg);
+}
+
+@keyframes reminder {
+    from {opacity: .15}
+    to {opacity: .7}
+}
+
+#step_forward.active {
+    animation-name: reminder;
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.step.active {
+    opacity: .7;
+}
+
+/* WITHIN THE PLAY AREA */
+.game-space {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    width: 64%;
+    height: 100svh;
+    padding-top: 4svh;
+    padding-bottom: 4svh;
+}
+
+.card-hand {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    column-gap: 3svh;
+}
+
+.board-space {
+    display: flex;
+    flex-flow: row nowrap;
+    column-gap: 7svh;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+	aspect-ratio: 1;
+	height: 56.84svh;
+	background-color: #9b958321;
+	border-radius: 3%;
+	display: grid;
+	grid-template-rows: repeat(5, auto);
+	grid-template-columns: repeat(5, auto);
+	gap: 1.1%;
+	padding: calc(.027 * 56.84svh);
+}
+
+.space {
+    background-image: url("images/spaces/01.png");
+    border-radius: 8%;
+    position: relative;
+}
+
+.pawn {
+    position: absolute;
+    background-image: none;
+    background-position: center;
+    z-index: 2;
+    background-size: 225%;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.pawn.nonempty {
+    pointer-events: revert;
+}
+
+.selection.target + .pawn {
+    pointer-events: none;
+}
+
+.pawn.nonempty:hover {
+    cursor: pointer;
+}
+
+.pawn.blue-normal {
+    background-image: url("images/pawns/blue_pawn.png");
+}
+
+.pawn.blue-master {
+    background-image: url("images/pawns/blue_master_pawn.png");
+}
+
+.pawn.red-normal {
+    background-image: url("images/pawns/red_pawn.png");
+}
+
+.pawn.red-master {
+    background-image: url("images/pawns/red_master_pawn.png");
+}
+
+.card {
+    position: relative;
+    aspect-ratio: calc(15 / 9);
+    height: 14.62svh;
+    background-size: cover;
+}
+
+.card.nonempty:hover {
+    cursor: pointer;
+}
+
+.game-over {
+    opacity: .6;
+}
+
+.rotated {
+    transform: rotate(180deg);
+}
+
+/* SELECTIONS */
+.selection {
+    position: absolute;
+    background-image: none;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-size: 100%;
+}
+
+.space .selection.source.red {
+    background-image: url("images/selections/red-pawn-selected.png");
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+}
+
+.space .selection.source.blue {
+    background-image: url("images/selections/blue-pawn-selected.png");
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+}
+
+.space .selection.target.red {
+    background-image: url("images/selections/red-target-square.png");
+}
+
+.space .selection.target.blue {
+    background-image: url("images/selections/blue-target-square.png");
+}
+
+.space .selection.target:hover {
+    background-color: rgba(17.7, 17.6, 13.6, .2);
+    cursor: pointer;
+}
+
+.card .selection.red {
+    background-image: url("images/selections/red-card-selected.png");
+}
+
+.card .selection.blue {
+    background-image: url("images/selections/blue-card-selected.png");
+}
