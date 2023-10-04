@@ -23,7 +23,7 @@ var winningColor = `none`;
 const pawnSelection = `selection source ${userColor}`;
 const destSelection = `selection target ${userColor}`;
 const cardSelection = `selection ${userColor}`;
-var opponentName = "";
+var opponentName = "Computer";
 var opponentRating = "";
 
 // add basic listeners and graphics
@@ -42,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         cards[i].onclick = clickedCard;
     }
 
-    selectionState.setWaiting(true);
+    selectionState.waiting = true;
+    document.getElementById("opponent-info").classList.add("history-standby");
+    document.getElementById("user-info").classList.add("history-standby");
 });
 
 // DOM UTILITY FUNCTIONS
@@ -78,26 +80,14 @@ function endGame() {
         return;
     }
 
-    userRating = parseInt(rating);
-    opponentRating = parseInt(opponentRating);
-    var opponentInfo = document.getElementById("opponent-info");
-    var userInfo = document.getElementById("user-info");
     var winnerName;
     if (winningColor === userColor) {
         happySound.play();
-        winnerName = userName;
-        var dRating = Math.round(calculateEloChange(opponentRating, userRating, 0, 32));
-        opponentInfo.querySelector(".rating").innerHTML += ` -${Math.abs(dRating)}`;
-        dRating = Math.round(calculateEloChange(userRating, opponentRating, 1, 32));
-        userInfo.querySelector(".rating").innerHTML += ` +${dRating}`;
+        winnerName = "You win!";
     }
     else {
         sadSound.play();
-        winnerName = opponentName;
-        var dRating = Math.round(calculateEloChange(opponentRating, userRating, 1, 32));
-        opponentInfo.querySelector(".rating").innerHTML += ` +${dRating}`;
-        dRating = Math.round(calculateEloChange(userRating, opponentRating, 0, 32));
-        userInfo.querySelector(".rating").innerHTML += ` -${Math.abs(dRating)}`;
+        winnerName = "The computer wins!";
     }
 
     selectionState.gameOver = true;
@@ -105,12 +95,12 @@ function endGame() {
     document.getElementById("opponent-info").classList.remove("active");
     document.getElementById("user-info").classList.remove("active");
 
-    document.getElementById("chat").innerHTML += `\n${winnerName} wins!`;
-
+    // TODO: chat does not exist
+    // document.getElementById("chat").innerHTML += `\n${winnerName} wins!`;
     var results = document.getElementById("results");
     results.classList.add(winningColor);
     results.classList.remove("inactive");
-    results.querySelector("div").innerHTML = `${winnerName} wins!`;
+    results.querySelector("div").innerHTML = winnerName;
     results.querySelector("button").onclick = function() {
         document.getElementById("results").classList.add("inactive");
     }
@@ -118,20 +108,6 @@ function endGame() {
     let cards = document.getElementsByClassName("card");
     for (let i = 0; i < cards.length; i++) {
         cards[i].classList.add("game-over");
-    }
-
-    if (isOwner) {
-        var winner;
-        if (winningColor === userColor) {
-            winner = "owner";
-        }
-        else {
-            winner = "opponent";
-        }
-        gameSocket.send(JSON.stringify({
-            'type': "game_over",
-            'winner': winner,
-        }));
     }
 }
 
@@ -256,178 +232,13 @@ function clickedCard(e) {
     }
 }
 
-function mirror(spaceId) {
-    var row = parseInt(spaceId[0]);
-    var col = parseInt(spaceId[1]);
-    row = 4 - row;
-    col = 4 - col;
-    return row.toString() + col.toString();
-}
-
-// ANITMAION FUNCTIONS
-
-function animatePawn(source, destination, capturedClass=null) {
-    var sourcePawn = getPawnElement(source);
-    var destPawn = getPawnElement(destination);
-    var dx = destPawn.getBoundingClientRect().x - sourcePawn.getBoundingClientRect().x;
-    var dy = destPawn.getBoundingClientRect().y - sourcePawn.getBoundingClientRect().y;
-    sourcePawn.style.zIndex = "3";
-    sourcePawn.style.transition = "transform 0.2s ease-out 0s";
-    sourcePawn.style.transform = `translate(${dx}px, ${dy}px)`;
-
-    sourcePawn.addEventListener("transitionend", function pawnCleanup() {
-        sourcePawn.style.zIndex = "2";
-        sourcePawn.style.transition = "";
-        sourcePawn.style.transform = ""; 
-        movePawn(source, destination);
-        if (capturedClass != null) {
-            sourcePawn.className = capturedClass;
-        }
-        sourcePawn.removeEventListener("transitionend", pawnCleanup);
-    });
-}
-
-function animateCard(source, destination, shouldRotate, delay, lastHistoryAnimation=false) {
-    var dx = destination.getBoundingClientRect().x - source.getBoundingClientRect().x;
-    var dy = destination.getBoundingClientRect().y - source.getBoundingClientRect().y;
-    source.style.zIndex = "5";
-    source.style.transition = `transform 0.5s ease-out ${delay}s`;
-    if (shouldRotate) {
-        source.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
-
-    }
-    else {
-        source.style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
-    }
-
-    source.addEventListener("transitionend", function cardCleanup() {
-        source.style.zIndex = "3";
-        source.style.transition = "";
-        source.style.transform = "";
-        moveCard(source, destination);
-        if (lastHistoryAnimation) {
-            gameHistory.blocking = false;
-        }
-        source.removeEventListener("transitionend", cardCleanup);
-    })
-}
-
-
-// SOCKET LOGIC
-const gameSocket = new WebSocket(
-    'ws://'
-    + window.location.host
-    + '/ws/multiplayer/'
-    + gameId
-    + '/'
-);
-
-function drawCards() {
-    gameSocket.send(JSON.stringify({
-        'type': "cards",
-        'ownerCard0': deck[0].name,
-        'ownerCard1': deck[1].name,
-        'opponentCard0': deck[2].name,
-        'opponentCard1': deck[3].name,
-        'middleCard': deck[4].name,
-    }));
-}
-
-function fillCards(data) {
-    if (isOwner) {
-        getCard("user_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard0"] + ".png)";
-        getCard("user_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard1"] + ".png)";
-        getCard("opponent_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard0"] + ".png)";
-        getCard("opponent_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard1"] + ".png)";
-    }
-    else {
-        getCard("opponent_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard0"] + ".png)";
-        getCard("opponent_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard1"] + ".png)";
-        getCard("user_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard0"] + ".png)";
-        getCard("user_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard1"] + ".png)";
-    }
-    var middle_card = getCardByName(data["middleCard"]);
-    if (middle_card.startingColor == userColor) {
-        getCard("middle_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["middleCard"] + ".png)";
-        getCard("middle_card_1").classList.add("nonempty");
-        selectionState.setWaiting(false);
-    }
-    else {
-        getCard("middle_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["middleCard"] + ".png)";
-        getCard("middle_card_0").classList.add("nonempty");
-        selectionState.setWaiting(true);
-    }
-}
-
-function fillOpponentInfo(data) {
-    if (isOwner) {
-        opponentName = data["opponentName"];
-        opponentRating = data["opponentRating"];
-    }
-    else {
-        opponentName = data["ownerName"];
-        opponentRating = data["ownerRating"];
-    }
-    var opponentInfo = document.getElementById("opponent-info");
-    opponentInfo.querySelector(".name").innerHTML = opponentName;
-    opponentInfo.querySelector(".rating").innerHTML = `(${opponentRating})`;
-    document.querySelector("title").innerHTML += " vs " + opponentName;
-    // TODO: add rating update
-
-}
-
-function calculateEloChange(ratingA, ratingB, points, k) {
-    let eA = 1 / ( 1 + 10 ** (( ratingB - ratingA ) / 400 ));
-    return k * ( points - eA );
-}
-
-function checkForWin(sourceId, targetId) {
-    var targetClass = getPawnElement(document.getElementById(targetId)).className;
-    if (targetClass.includes(opponentMaster)) {
-        winningColor = userColor;
-        return;
-    }
-    if (targetClass.includes(userMaster)) {
-        winningColor = opponentColor;
-        return;
-    }
-    var sourceClass = getPawnElement(document.getElementById(sourceId)).className;
-    if (sourceClass.includes(userMaster) && targetId === "02") {
-        winningColor = userColor;
-        return;
-    }
-    if (sourceClass.includes(opponentMaster) && targetId === "42") {
-        winningColor = opponentColor;
-        return;
-    }
-    return;
-}
-
-function sendMove() {
-    selectionState.setWaiting(true);
-    var moveInfo = {
-        'type': 'move',
-        'color': userColor,
-        'source': selectionState.source.id,
-        'target': selectionState.destination.id,
-        'cardIndex': selectionState.card.id[selectionState.card.id.length - 1],
-    };
-
-    // update visual aspects
-    selectionState.clearGraphics();
-
-    selectionState.clear();
-    gameSocket.send(JSON.stringify(moveInfo));
-}
-
 function performMove(data) {
+    if (data['color'] === "game over") {
+        return;
+    }
     var color = data['color'];
     var sourceId = data['source'];
     var targetId = data['target'];
-    if (color != userColor) {
-        sourceId = mirror(sourceId);
-        targetId = mirror(targetId);
-    }
     checkForWin(sourceId, targetId);
     var source = document.getElementById(sourceId);
     var target = document.getElementById(targetId);
@@ -482,41 +293,230 @@ function performMove(data) {
     });
 }
 
-gameSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-
-    if (data["type"] === "setup") {
-        fillOpponentInfo(data);
-        if (isOwner) {
-            drawCards();
-        }
+function checkForWin(sourceId, targetId) {
+    var targetClass = getPawnElement(document.getElementById(targetId)).className;
+    if (targetClass.includes(opponentMaster)) {
+        winningColor = userColor;
         return;
     }
-
-    if (data["type"] === "cards") {
-        fillCards(data);
+    if (targetClass.includes(userMaster)) {
+        winningColor = opponentColor;
+        return;
     }
+    var sourceClass = getPawnElement(document.getElementById(sourceId)).className;
+    if (sourceClass.includes(userMaster) && targetId === "02") {
+        winningColor = userColor;
+        return;
+    }
+    if (sourceClass.includes(opponentMaster) && targetId === "42") {
+        winningColor = opponentColor;
+        return;
+    }
+    return;
+}
 
-    if (data["type"] === "move") {
+function sendMove() {
+    var moveInfo = {
+        'type': 'move',
+        'color': userColor,
+        'source': selectionState.source.id,
+        'target': selectionState.destination.id,
+        'cardIndex': selectionState.card.id[selectionState.card.id.length - 1],
+    };
+
+    performMove(moveInfo);
+
+    // update visual aspects
+    selectionState.clearGraphics();
+
+    selectionState.clear();
+
+    // send a fetch message to the server with the state
+    fetch("move/", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrftoken,
+    },
+        body: JSON.stringify(moveInfo) //JavaScript object of data to POST
+    })
+    .then(response => {
+            return response.json() //Convert response to JSON
+    })
+    .then(data => {
         performMove(data);
+    })
+    return;
+}
+
+// ANITMAION FUNCTIONS
+
+function animatePawn(source, destination, capturedClass=null) {
+    var sourcePawn = getPawnElement(source);
+    var destPawn = getPawnElement(destination);
+    var dx = destPawn.getBoundingClientRect().x - sourcePawn.getBoundingClientRect().x;
+    var dy = destPawn.getBoundingClientRect().y - sourcePawn.getBoundingClientRect().y;
+    sourcePawn.style.zIndex = "3";
+    sourcePawn.style.transition = "transform 0.2s ease-out 0s";
+    sourcePawn.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    sourcePawn.addEventListener("transitionend", function pawnCleanup() {
+        sourcePawn.style.zIndex = "2";
+        sourcePawn.style.transition = "";
+        sourcePawn.style.transform = ""; 
+        movePawn(source, destination);
+        if (capturedClass != null) {
+            sourcePawn.className = capturedClass;
+        }
+        sourcePawn.removeEventListener("transitionend", pawnCleanup);
+    });
+}
+
+function animateCard(source, destination, shouldRotate, delay, lastHistoryAnimation=false) {
+    var dx = destination.getBoundingClientRect().x - source.getBoundingClientRect().x;
+    var dy = destination.getBoundingClientRect().y - source.getBoundingClientRect().y;
+    source.style.zIndex = "5";
+    source.style.transition = `transform 0.5s ease-out ${delay}s`;
+    if (shouldRotate) {
+        source.style.transform = `matrix(-1, 0, 0, -1, ${dx}, ${dy})`;
+
+    }
+    else {
+        source.style.transform = `matrix(1, 0, 0, 1, ${dx}, ${dy})`;
     }
 
-    if (data["type"] === "disconnected") {
-        loserName = data["disconnectedPlayer"]
-        document.getElementById("chat").innerHTML += `\n${loserName} disconnected.`;
-        if (loserName === userName) {
-            winningColor = opponentColor;
+    source.addEventListener("transitionend", function cardCleanup() {
+        source.style.zIndex = "3";
+        source.style.transition = "";
+        source.style.transform = "";
+        moveCard(source, destination);
+        if (lastHistoryAnimation) {
+            gameHistory.blocking = false;
         }
-        if (loserName === opponentName) {
-            winningColor = userColor;
-        }
-        endGame();
+        source.removeEventListener("transitionend", cardCleanup);
+    })
+}
+
+
+// AI MODULE
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("AI-settings").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        var AI_settings = {
+            playstyle: formData.get("playstyle"),
+            depth: formData.get("depth")
+        };
+
+        var description = `${AI_settings["playstyle"]} (${AI_settings["depth"]})`;
+        description = description.charAt(0).toUpperCase() + description.slice(1);
+        document.getElementById("opponent-info").querySelector('.rating').innerHTML = description;
+        
+        fetch("AIsettings/", {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers:{
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken,
+        },
+            body: JSON.stringify(AI_settings) //JavaScript object of data to POST
+        })
+        .then(response => {
+            begin_game();
+            return;
+        })
+    });
+})
+
+function fillCards(data) {
+    if (isOwner) {
+        getCard("user_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard0"] + ".png)";
+        getCard("user_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard1"] + ".png)";
+        getCard("opponent_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard0"] + ".png)";
+        getCard("opponent_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard1"] + ".png)";
     }
+    else {
+        getCard("opponent_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard0"] + ".png)";
+        getCard("opponent_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["ownerCard1"] + ".png)";
+        getCard("user_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard0"] + ".png)";
+        getCard("user_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["opponentCard1"] + ".png)";
+    }
+    var middle_card = getCardByName(data["middleCard"]);
+    if (middle_card.startingColor == userColor) {
+        getCard("middle_card_1").style.backgroundImage = "url(../../static/images/cards/" + data["middleCard"] + ".png)";
+        getCard("middle_card_1").classList.add("nonempty");
+        selectionState.setWaiting(false);
+    }
+    else {
+        getCard("middle_card_0").style.backgroundImage = "url(../../static/images/cards/" + data["middleCard"] + ".png)";
+        getCard("middle_card_0").classList.add("nonempty");
+        selectionState.setWaiting(true);
+    }
+}
+
+function begin_game() {
+    document.getElementById("game-space").classList.remove("game-over");
+    document.getElementById("AI-settings").classList.add("disable");
+    document.getElementById("opponent-info").classList.remove("history-standby");
+    document.getElementById("user-info").classList.remove("history-standby");
+    document.querySelector(".form-submit-button").classList.remove("prompt");
+    happySound.play();
+    // create the cards
+    fillCards({
+        'type': "cards",
+        'ownerCard0': deck[0].name,
+        'ownerCard1': deck[1].name,
+        'opponentCard0': deck[2].name,
+        'opponentCard1': deck[3].name,
+        'middleCard': deck[4].name,
+    });
+
+    // build the underlying python model
+    var setup_info = {
+        'userColor': userColor,
+        'owner_card_0': deck[0].name,
+        'owner_card_1': deck[1].name,
+        'opponent_card_0': deck[2].name,
+        'opponent_card_1': deck[3].name,
+        'middle_card': deck[4].name,
+    };
+    fetch("setup/", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrftoken,
+    },
+        body: JSON.stringify(setup_info) //JavaScript object of data to POST
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        if (data["pawn"] === "None") {
+            selectionState.waiting = false;
+            return;
+        }
+        repackedData = {
+            'color': opponentColor,
+            'source': data['source'],
+            'target': data['target'],
+            'cardIndex': data['cardIndex']
+        }
+        performMove(repackedData);
+        return;
+    })
 };
 
-gameSocket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
-};
+
+
+
+
 
 // GAME HISTORY MODULE
 
@@ -635,4 +635,6 @@ function sound(src) {
 var moveSound = new sound("../../static/sounds/move.mp3");
 var captureSound = new sound("../../static/sounds/capture.mp3");
 var happySound = new sound("../../static/sounds/happy.mp3");
+happySound.sound.volume = 0.5;
 var sadSound = new sound("../../static/sounds/sad.mp3");
+sadSound.sound.volume = 0.5;

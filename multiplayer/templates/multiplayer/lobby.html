@@ -1,11 +1,66 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
-    <meta charset="utf-8"/>
-    <title>Open Games</title>
+    <title>Onitama</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+    <link rel="stylesheet" href="{% static 'design-test.css' %}">
 </head>
 <body>
-    <h2>Open Games</h2>
+    <div class="sidebar sidebar-left">
+        <ul class="page-links">
+            <li class="logo"><a href="{% url 'home' %}">Onitama</a></li>
+            <li><a href="{% url 'singleplayer:game' %}">Singleplayer</a></li>
+            <li><a href="{% url 'multiplayer:lobby' %}">Multiplayer</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'accounts:signup' %}">Signup</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+        {% if user.is_authenticated %}
+            <div id="user-info" class="user history-standby">
+                <img class="color-icon" src="/static/images/testing/grey-icon.png">
+                <div class="name">{{ user.username }}</div>
+                <div class="rating">({{ user.rating }})</div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="lobby-space">
+        <div class="logo">Multiplayer</div>
+        <div class="open-games">
+            <header>Open Games</header>
+            <ul>
+                {% for game in games %}
+                <li>
+                    <a href="{% url 'multiplayer:join' game_id=game.id %}">vs. {{ game.owner }}
+                        <img class="open-game-color" src="/static/images/testing/{{ game.owner_color }}-icon.png">
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a class="create-game" href="{% url 'multiplayer:create' %}"><div>Create Game</div></a>
+        <div class="leaderboard">
+            <header>Leaderboard</header>
+            <ol>
+                <li style="padding-left: .2em">1. {{ leaders.0.username }} ({{ leaders.0.rating }})</li>
+                <li>2. {{ leaders.1.username }} ({{ leaders.1.rating }})</li>
+                <li>3. {{ leaders.2.username }} ({{ leaders.2.rating }})</li>
+                <li>4. {{ leaders.3.username }} ({{ leaders.3.rating }})</li>
+                <li>5. {{ leaders.4.username }} ({{ leaders.4.rating }})</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- <h2>Open Games</h2>
     <ul>
         {% for game in games %}
             <li>Game {{ game.id }}: {{ game.owner }} playing {{ game.opponent }}</li>
@@ -21,7 +76,4 @@
                 <a href="{% url 'multiplayer:join' game_id=game.id %}">Game {{ game.id }}: {{ game.owner }} playing {{ game.opponent }}</a>
             </li>
         {% endfor %}
-    </ul>
-
-</body>
-</html>
+    </ul> -->

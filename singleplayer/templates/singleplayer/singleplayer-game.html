@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 {% load static %}
 {% csrf_token %}
-
 <html lang="en">
     <head>
-        <title>Onitama</title>
+        <title>Onitama vs Computer</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -13,13 +12,11 @@
         <script>
             const userColor = "{{ user_color }}";
             const opponentColor = "{{ opponent_color }}";
-            const gameId = "{{ game_id }}";
-            const isOwner = "{{ is_owner }}" === "true";
+            const isOwner = true;
             const userName = "{{ username }}";
-            const rating = "{{ rating }}";
         </script>
         <script src="{% static 'front-end/cards.js' %}"></script>
-        <script src="{% static 'front-end/designtest.js' %}"></script>
+        <script src="{% static 'front-end/singleplayer.js' %}"></script>
     </head>
     <body>
         <div class="sidebar sidebar-left">
@@ -35,7 +32,7 @@
                 {% endif %}
             </ul>
         </div> 
-        <div class="game-space">
+        <div id="game-space" class="game-space game-over">
             <div id="results" class="inactive">
                 <div></div>
                 <button type="button">Close</button>
@@ -162,12 +159,49 @@
             </div>
         </div>
         <div class="sidebar sidebar-right">
-            <div id="opponent-info" class="user active">
+            <div id="opponent-info" class="user">
                 <img class="color-icon" src="/static/images/testing/{{ opponent_color }}-icon.png">
-                <div class="name">Waiting for</div>
-                <div class="rating">opponent...</div>
+                <div class="name">Computer</div>
+                <div class="rating"></div>
             </div>
-            <div id="chat" class="chat">Chat coming soon...</div>
+            <form id="AI-settings" method="post">
+                <div style="font-weight: 900; font-size: 150%">Setup</div>
+                <div class="playstyle">
+                    <div>Playstyle</div>
+                    <group class="radio">
+                        <div>
+                            <input id="defensive" type="radio" name="playstyle" value="defensive">
+                            <label for="defensive" class="playstyle-label {{ opponent_color }}">Defensive</label>
+                        </div>
+                        <div>
+                            <input id="balanced" type="radio" name="playstyle" value="balanced" checked="">
+                            <label for="balanced" class="playstyle-label {{ opponent_color }}">Balanced</label>
+                        </div>
+                        <div>
+                            <input id="aggressive" type="radio" name="playstyle" value="aggressive">
+                            <label for="aggressive" class="playstyle-label {{ opponent_color }}">Aggressive</label>
+                        </div>
+                    </group>
+                </div>
+                <div class="depth">
+                    <div>Strength</div>
+                    <group class="radio">
+                        <div>
+                            <input id="depth-1" type="radio" name="depth" value="1" checked="">
+                            <label for="depth-1" class="depth-label {{ opponent_color }}">1</label>
+                        </div>
+                        <div>
+                            <input id="depth-2" type="radio" name="depth" value="2">
+                            <label for="depth-2" class="depth-label {{ opponent_color }}">2</label>
+                        </div>
+                        <div>
+                            <input id="depth-3" type="radio" name="depth" value="3">
+                            <label for="depth-3" class="depth-label {{ opponent_color }}">3</label>
+                        </div>
+                    </group>
+                </div>
+                <input type="submit" value="Play" class="prompt form-submit-button {{ opponent_color }}">
+            </form>
             <div id="game-history" class="game-history">
                 <img id="step_backward" class="step" src="/static/images/testing/step.png">
                 <img id="step_forward" class="step" src="/static/images/testing/step.png">

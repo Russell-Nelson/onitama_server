@@ -23,6 +23,6 @@ urlpatterns = [
     path('', home, name="home"),
     path('singleplayer/', include("singleplayer.urls")),
     path('multiplayer/', include("multiplayer.urls")),
-    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("accounts.urls", "accounts")),
     path('accounts/', include("django.contrib.auth.urls")),
 ]

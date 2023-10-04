@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    color: #c5c5c5;
+    background: url("images/testing/background-light-black.jpg");
+}

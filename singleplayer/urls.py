@@ -5,7 +5,7 @@ app_name = "singleplayer"
 urlpatterns = [
     path("", views.home, name="home"),
     path("game/", views.game, name="game"),
-    path("move/", views.user_move, name="move"),
-    path("setup/", views.setup, name="setup"),
-    path("AIsettings/", views.AIsettings, name="AIsettings")
+    path("game/move/", views.user_move, name="move"),
+    path("game/setup/", views.setup, name="setup"),
+    path("game/AIsettings/", views.AIsettings, name="AIsettings")
 ]

@@ -4,12 +4,14 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import MultiplayerGame
+from .models import OnitamaUser
 import random
 
 @login_required
 def lobby(request):
     return render(request, "multiplayer/lobby.html", {
-        "games": MultiplayerGame.objects.filter(status=1)
+        "games": MultiplayerGame.objects.filter(status=1),
+        "leaders": OnitamaUser.objects.all().order_by('-rating').values()[0:5]
     })
 
 def test(request):
@@ -23,7 +25,7 @@ def game(request, game_id):
     game = MultiplayerGame.objects.get(pk=game_id)
     colors = ["red", "blue"]
     username = request.user.username
-    rating = 1388 # TODO: update ratings in usernames
+    rating = request.user.rating
     if request.user == game.owner:
         is_owner = "true"
         user_color = game.owner_color

@@ -1,6 +1,29 @@
-<h2>Home</h2>
-
-<a href="{% url 'singleplayer:game' %}">Singleplayer</a>
-<br>
-<a href="{% url 'multiplayer:lobby' %}">Multiplayer</a>
-
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+<html lang="en">
+  <head>
+    <title>Onitama</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+    <link rel="stylesheet" href="{% static 'design-test.css' %}">
+  </head>
+  <body class="home">
+    <div class="home top-bar">
+      <a class="home logo" href="{% url 'home' %}">Onitama</a>
+      <a class="home button blue first" href="{% url 'home' %}">Home</a>
+      <a class="home button blue" href="{% url 'singleplayer:game' %}">Singleplayer</a>
+      <a class="home button blue" href="{% url 'multiplayer:lobby' %}">Lobby</a>
+      <a class="home button blue" href="{% url 'accounts:signup' %}">Signup</a>
+      <a class="home button blue last" href="{% url 'login' %}">Login</a>
+      <a class="home button red isolated" href="{% url 'multiplayer:lobby' %}">Play</a>
+    </div>
+    <div class="home preview-box">
+      <img src="/static/images/testing/board-preview.png" class="board-preview">
+      <div class="preview-text">Play Onitama online against friends or in singleplayer mode against a customizable computer opponent.</div>
+      <a class="home button red isolated" href="{% url 'multiplayer:lobby' %}">Play Online</a>
+    </div>
+  </body>
+</html>

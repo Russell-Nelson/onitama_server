@@ -30,22 +30,24 @@ class GameConsumer(WebsocketConsumer):
             game.status = 2
             game.save()
             async_to_sync(self.channel_layer.group_send)(
-            self.game_group_name, {"type": "setup", "ownerName": game.owner.username, "opponentName": game.opponent.username}
+            self.game_group_name, {"type": "setup", "ownerName": game.owner.username, "ownerRating": game.owner.rating, "opponentName": game.opponent.username, "opponentRating": game.opponent.rating}
             )
 
     def disconnect(self, close_code):
         game = MultiplayerGame.objects.get(pk=self.game_id)
         if (game.status == 1):
             game.status = 3
-        elif (game.status == 2):
-            # send disconnect game winning message
-            game.status = 3
-            user = self.scope["user"]
-            if (game.owner == user):
-                game.winner = "opponent"
-            else:
-                game.winner = "owner"
             game.save()
+        elif (game.status == 2):
+            user = self.scope["user"]
+            # send disconnect game winning message
+            async_to_sync(self.channel_layer.group_send)(
+                self.game_group_name, {"type": "disconnected", "disconnectedPlayer": user.username}
+            )
+            if (game.owner == user):
+                game.setWinner("opponent")
+            else:
+                game.setWinner("owner")
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.game_group_name, self.channel_name
@@ -75,6 +77,10 @@ class GameConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
             self.game_group_name, text_data_json
         )
+        if text_data_json['type'] == 'disconnected':
+            async_to_sync(self.channel_layer.group_send)(
+            self.game_group_name, text_data_json
+        )
         return
 
     # Receive message from room group
@@ -88,12 +94,13 @@ class GameConsumer(WebsocketConsumer):
     def names(self, data):
         self.send(text_data=json.dumps(data))
     
-    def game_over(self, data):       
+    def disconnected(self, data):
+        self.send(text_data=json.dumps(data))
+    
+    def game_over(self, data):
         game = MultiplayerGame.objects.get(pk=self.game_id)
-        game.winner = data["winner"]
-        game.status = 3
-        game.save()
-        # TODO: change to setWinner and ratings calculations within models
+        if (self.scope["user"] == game.owner):
+            game.setWinner(data["winner"])
 
 
 

@@ -19,6 +19,7 @@ from .game import game_state
 from .game import move as onitama_move
 from .game import minimax
 import time
+import random
 
 playstyle_dictionary = {
     "defensive": minimax.defensive_evaluation,
@@ -31,7 +32,24 @@ def home(request):
     return render(request, "singleplayer/home.html")
 
 def game(request):
-    return render(request, "singleplayer/game.html")
+    # TODO: add random colors
+    # colors = ["red", "blue"]
+    # user_color = random.choice(colors)
+    # colors.remove(user_color)
+    # opponent_color = colors[0]
+    user_color = "red"
+    opponent_color = "blue"
+    username = "Anonymous"
+    rating = "-"
+    if request.user.is_authenticated:
+        username = request.user.username
+        rating = request.user.rating
+    return render(request, "singleplayer/singleplayer-game.html", {
+        "user_color": user_color,
+        "opponent_color": opponent_color,
+        "username": username,
+        "rating": rating,
+    })
 
 # https://www.brennantymrak.com/articles/fetching-data-with-ajax-and-django
 def user_move(request):
@@ -40,11 +58,12 @@ def user_move(request):
     global game_structure
     move_data = json.load(request)
     # move_data example: {'pawn': '43', 'card': 'red_card_0', 'dest': '34'}
-    dest_row = int(move_data['dest'][0])
-    dest_column = int(move_data['dest'][1])
-    pawn_row = int(move_data['pawn'][0])
-    pawn_column = int(move_data['pawn'][1])
-    card_index = int(move_data['card'][-1])
+    # new move_data example {'color': 'red', source: '43', 'target': '34', 'cardIndex': 0}
+    dest_row = int(move_data['target'][0])
+    dest_column = int(move_data['target'][1])
+    pawn_row = int(move_data['source'][0])
+    pawn_column = int(move_data['source'][1])
+    card_index = int(move_data['cardIndex'])
     card = back_end_game.red_player.hand[card_index]
     movement_index = card.get_movement_index((pawn_row, pawn_column), (dest_row, dest_column))
 
@@ -54,7 +73,7 @@ def user_move(request):
     request.session['game_state'] = back_end_game.to_dict()
 
     if back_end_game.game_is_over():
-        game_over_dict = {'winner': back_end_game.game_is_over()}
+        game_over_dict = {'color': "game over"}
         return JsonResponse(game_over_dict)
     
     # start timer
@@ -71,16 +90,18 @@ def user_move(request):
     # move_data example: {'pawn': '43', 'card': 'red_card_0', 'dest': '34'}\
     computer_move_dict = {
         'winner': 'None',
-        'pawn': str(computer_move.piece_row) + str(computer_move.piece_column),
-        'card': 'blue_card_' + str(computer_move.card_index),
-        'dest': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
+        'color': 'blue',
+        'source': str(computer_move.piece_row) + str(computer_move.piece_column),
+        'cardIndex': str(computer_move.card_index),
+        'target': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
     }
 
     computer_move.perform_move(back_end_game, back_end_game.blue_player)
     request.session['game_state'] = back_end_game.to_dict()
 
-    if back_end_game.game_is_over():
-        computer_move_dict['winner'] = back_end_game.game_is_over()
+    # SHOULDNT NEED THIS ANYMORE
+    # if back_end_game.game_is_over():
+    #     computer_move_dict['winner'] = back_end_game.game_is_over()
 
     # check timer
     time_elapsed = time.time() - start
@@ -89,7 +110,6 @@ def user_move(request):
     return JsonResponse(computer_move_dict)
 
 def AIsettings(request):
-
     AI_settings = json.load(request)
     playstyle = AI_settings["playstyle"]
     if playstyle not in ["defensive", "balanced", "aggressive"]:
@@ -105,10 +125,11 @@ def AIsettings(request):
 def setup(request):
     setup_data = json.load(request)
     # setup_data example: 
-    # {'blue_card_0': 'crane', 
-    #  'blue_card_1': 'turtle', 
-    #  'red_card_0': 'dragon', 
-    #  'red_card_1': 'rooster', 
+    # {'userColor': 'blue',
+    #  'owner_card_0': 'crane', 
+    #  'owner_card_1': 'turtle', 
+    #  'opponent_card_0': 'dragon', 
+    #  'opponent_card_1': 'rooster', 
     #  'middle_card': 'ram'}
     back_end_game = game_state.Game_state(setup_data, setup=True)
 
@@ -122,9 +143,10 @@ def setup(request):
         )
         movement_tuple = back_end_game.blue_player.hand[computer_move.card_index].movement[computer_move.movement_index]
         computer_move_dict = {
-            'pawn': str(computer_move.piece_row) + str(computer_move.piece_column),
-            'card': 'blue_card_' + str(computer_move.card_index),
-            'dest': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
+            'color': 'blue',
+            'source': str(computer_move.piece_row) + str(computer_move.piece_column),
+            'cardIndex': str(computer_move.card_index),
+            'target': str(computer_move.piece_row - movement_tuple[0]) + str(computer_move.piece_column - movement_tuple[1])
         }
         computer_move.perform_move(back_end_game, back_end_game.blue_player)
         request.session['game_state'] = back_end_game.to_dict()
