@@ -371,7 +371,7 @@ function fillOpponentInfo(data) {
     var opponentInfo = document.getElementById("opponent-info");
     opponentInfo.querySelector(".name").innerHTML = opponentName;
     opponentInfo.querySelector(".rating").innerHTML = `(${opponentRating})`;
-    document.querySelector("title").innerHTML += " vs " + opponentName;
+    document.querySelector("title").innerHTML = "Play vs " + opponentName + " | Play-Onitama.com";
     // TODO: add rating update
 
 }
