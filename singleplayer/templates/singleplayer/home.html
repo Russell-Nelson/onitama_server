@@ -13,17 +13,29 @@
   <body class="home">
     <div class="home top-bar">
       <a class="home logo" href="{% url 'home' %}">Onitama</a>
-      <a class="home button blue first" href="{% url 'home' %}">Home</a>
-      <a class="home button blue" href="{% url 'singleplayer:game' %}">Singleplayer</a>
-      <a class="home button blue" href="{% url 'multiplayer:lobby' %}">Lobby</a>
-      <a class="home button blue" href="{% url 'accounts:signup' %}">Signup</a>
-      <a class="home button blue last" href="{% url 'login' %}">Login</a>
-      <a class="home button red isolated" href="{% url 'multiplayer:lobby' %}">Play</a>
+      <form action="{% url 'home' %}">
+        <button class="home button blue first" type="submit">Home</button>
+      </form>
+      <form action="{% url 'singleplayer:game' %}">
+        <button class="home button blue" type="submit">Singleplayer</button>
+      </form>
+      <form action="{% url 'multiplayer:lobby' %}">
+        <button class="home button blue" type="submit">Lobby</button>
+      </form>
+      <form action="{% url 'accounts:signup' %}">
+        <button class="home button blue" type="submit">Signup</button>
+      </form>
+      <form action="{% url 'login' %}">
+        <button class="home button blue last" type="submit">Login</button>
+      </form>
     </div>
     <div class="home preview-box">
       <img src="/static/images/testing/board-preview.png" class="board-preview">
       <div class="preview-text">Play Onitama online against friends or in singleplayer mode against a customizable computer opponent.</div>
-      <a class="home button red isolated" href="{% url 'multiplayer:lobby' %}">Play Online</a>
+      <form action="{% url 'multiplayer:lobby' %}">
+        <button class="home button red isolated" type="submit">Play Online</button>
+      </form>
     </div>
+    <h2 class="screen-size-message">Sorry, this screen size is not yet supported.</h2>
   </body>
 </html>

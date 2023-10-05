@@ -41,6 +41,11 @@
                         <img class="open-game-color" src="/static/images/testing/{{ game.owner_color }}-icon.png">
                     </a>
                 </li>
+                {% empty %}
+                <br>
+                <div class="empty-message">There are no open games to join.</div>
+                <br>
+                <div class="empty-message"><a href="{% url 'multiplayer:create' %}">Create</a> a game for an opponent to join or play against the computer in <a href="{% url 'singleplayer:game' %}">singleplayer</a>.</div>
                 {% endfor %}
             </ul>
         </div>

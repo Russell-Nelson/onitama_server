@@ -1,3 +1,9 @@
+.screen-size-message {
+    position: absolute;
+    text-align: center;
+    display: none;
+}
+
 * {
     box-sizing: border-box;
   }
@@ -548,6 +554,13 @@ body.home {
     padding: 3% 0% 1% 0%;
 }
 
+.home.top-bar form {
+    display: flex;
+    flex-direction: revert;
+    height: revert;
+    font-size: revert;
+}
+
 .home.logo {
     font-size: 250%;
     margin-right: 1%;
@@ -558,11 +571,13 @@ body.home {
 .home.button {
     border-radius: 0px 0px 0px 0px;
     border: .05em solid rgb(0, 0, 0);
+    border-top-style: none;
+    border-bottom-style: none;
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
     font-size: 90%;
     color: #c5c5c5;
-    padding: .6em 1em 0em 1em;
+    padding: .3em 1em .3em 1em;
     margin-bottom: .5em;
     margin-top: .4em;
 }
@@ -606,7 +621,10 @@ body.home {
 
 .home.button.isolated {
     border-radius: .5em .5em .5em .5em;
-    margin-left: 1%;
+}
+
+.home.top-bar form .home.button.isolated {
+    margin-left: 10%;
 }
 
 .home.preview-box {
@@ -637,12 +655,18 @@ body.home {
     align-self: center;
 }
 
-.preview-box .home.button.isolated {
+.preview-box form {
     justify-self: center;
     text-align: center;
     font-size: 140%;
     width: 50%;
-    aspect-ratio: 2;
+    height: 60%;
+    display: flex;
+    flex-direction: revert;
+}
+
+.preview-box form .button {
+    overflow: hidden;
 }
 
 /* LOBBY PAGE */
@@ -716,6 +740,15 @@ body.home {
     height: 1.3em;
     vertical-align: middle;
     opacity: .55;
+}
+
+.empty-message {
+    padding: 0 5%;
+    font-weight: 200;
+}
+
+.empty-message a {
+    font-weight: 700;
 }
 
 .lobby-space .create-game {
@@ -828,4 +861,16 @@ body.home {
 
 .accounts-space.signup form button {
     font-size: 110%;
+}
+
+@media (max-width: 1160px) or (max-height: 467px) {
+    body :not(.screen-size-message) {
+        display: none;
+        opacity: 0;
+    }
+
+    .screen-size-message {
+        opacity: 1;
+        display: initial;
+    }
 }
