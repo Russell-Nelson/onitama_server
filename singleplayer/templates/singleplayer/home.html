@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+<html lang="en">
+  <head>
+    <title>Home | Play-Onitama.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+    <link rel="stylesheet" href="{% static 'design-test.css' %}">
+  </head>
+  <body class="home">
+    <div class="home top-bar">
+      <a class="home logo" href="{% url 'home' %}">Onitama</a>
+      <form action="{% url 'home' %}">
+        <button class="home button blue first" type="submit">Home</button>
+      </form>
+      <form action="{% url 'singleplayer:game' %}">
+        <button class="home button blue" type="submit">Singleplayer</button>
+      </form>
+      <form action="{% url 'multiplayer:lobby' %}">
+        <button class="home button blue" type="submit">Lobby</button>
+      </form>
+      <form action="{% url 'accounts:signup' %}">
+        <button class="home button blue" type="submit">Signup</button>
+      </form>
+      <form action="{% url 'login' %}">
+        <button class="home button blue last" type="submit">Login</button>
+      </form>
+    </div>
+    <div class="home preview-box">
+      <img src="/static/images/testing/board-preview.png" class="board-preview">
+      <div class="preview-text">Play Onitama online against friends or in singleplayer mode against a customizable computer opponent.</div>
+      <form action="{% url 'multiplayer:lobby' %}">
+        <button class="home button red isolated" type="submit">Play Online</button>
+      </form>
+    </div>
+    <h2 class="screen-size-message">Sorry, this screen size is not yet supported.</h2>
+  </body>
+</html>

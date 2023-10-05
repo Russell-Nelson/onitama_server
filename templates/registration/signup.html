@@ -1,0 +1,45 @@
+{% load static %}
+<head>
+  <title>Sign Up | Play-Onitama.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+  <link rel="stylesheet" href="{% static 'design-test.css' %}">
+</head>
+<body>
+  <div class="sidebar sidebar-left">
+    <ul class="page-links">
+        <li class="logo"><a href="{% url 'home' %}">Onitama</a></li>
+        <li><a href="{% url 'singleplayer:game' %}">Singleplayer</a></li>
+        <li><a href="{% url 'multiplayer:lobby' %}">Multiplayer</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'accounts:signup' %}">Signup</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+    </ul>
+  </div>
+  <div class="accounts-space signup">
+    <div class="logo">Sign up</div>
+    <form class="signup" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+</body>
+  
+
+
+<!-- {% block title %}Sign Up{% endblock %}
+
+{% block content %}
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+  </form>
+{% endblock %} -->

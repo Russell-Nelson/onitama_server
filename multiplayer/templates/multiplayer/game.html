@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+
+<html lang="en">
+    <head>
+        <title>Waiting for opponent | Play-Onitama.com</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+        <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+        <link rel="stylesheet" href="{% static 'design-test.css' %}">
+        <script>
+            const userColor = "{{ user_color }}";
+            const opponentColor = "{{ opponent_color }}";
+            const gameId = "{{ game_id }}";
+            const isOwner = "{{ is_owner }}" === "true";
+            const userName = "{{ username }}";
+            const rating = "{{ rating }}";
+        </script>
+        <script src="{% static 'front-end/cards.js' %}"></script>
+        <script src="{% static 'front-end/designtest.js' %}"></script>
+    </head>
+    <body>
+        <div class="sidebar sidebar-left">
+            <ul class="page-links">
+                <li class="logo"><a href="{% url 'home' %}">Onitama</a></li>
+                <li><a href="{% url 'singleplayer:game' %}">Singleplayer</a></li>
+                <li><a href="{% url 'multiplayer:lobby' %}">Multiplayer</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:signup' %}">Signup</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </div> 
+        <div class="game-space">
+            <div id="results" class="inactive">
+                <div></div>
+                <button type="button">Close</button>
+            </div>
+            <div class="card-hand">
+                <div id="opponent_card_0" class="card nonempty rotated"></div>
+                <div id="opponent_card_1" class="card nonempty rotated"></div>
+            </div>
+            <div class="board-space">
+                <div id="middle_card_0" class="card rotated"></div>
+                <div id="board" class="board">
+                    <div id="00" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ opponent_color }}-normal"></div>
+                    </div>
+                    <div id="01" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ opponent_color }}-normal"></div>
+                    </div>
+                    <div id="02" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ opponent_color }}-master"></div>
+                        <div class="temple opponent rotated {{ opponent_color }}"></div>
+                    </div>
+                    <div id="03" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ opponent_color }}-normal"></div>
+                    </div>
+                    <div id="04" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ opponent_color }}-normal"></div>
+                    </div>
+                    <div id="10" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="11" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="12" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="13" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="14" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="20" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="21" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="22" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="23" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="24" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="30" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="31" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="32" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="33" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="34" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn"></div>
+                    </div>
+                    <div id="40" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ user_color }}-normal"></div>
+                    </div>
+                    <div id="41" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ user_color }}-normal"></div>
+                    </div>
+                    <div id="42" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ user_color }}-master"></div>
+                        <div class="temple user {{ user_color }}"></div>
+                    </div>
+                    <div id="43" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ user_color }}-normal"></div>
+                    </div>
+                    <div id="44" class="space">
+                        <div class="selection"></div>
+                        <div class="pawn nonempty {{ user_color }}-normal"></div>
+                    </div>                    
+                </div>
+                <div id="middle_card_1" class="card"></div>
+            </div>
+            <div class="card-hand">
+                <div id="user_card_0" class="card nonempty">
+                    <div class="selection"></div>
+                </div>
+                <div id="user_card_1" class="card nonempty">
+                    <div class="selection"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar sidebar-right">
+            <div id="opponent-info" class="user active">
+                <img class="color-icon" src="/static/images/testing/{{ opponent_color }}-icon.png">
+                <div class="name">Waiting for</div>
+                <div class="rating">opponent...</div>
+            </div>
+            <div id="chat" class="chat">Chat coming soon...</div>
+            <div id="game-history" class="game-history">
+                <img id="step_backward" class="step" src="/static/images/testing/step.png">
+                <img id="step_forward" class="step" src="/static/images/testing/step.png">
+            </div>
+            <div id="user-info" class="user">
+                <img class="color-icon" src="/static/images/testing/{{ user_color }}-icon.png">
+                <div class="name">{{ username }}</div>
+                <div class="rating">({{ rating }})</div>
+            </div>
+        </div>
+    </body>
+</html>

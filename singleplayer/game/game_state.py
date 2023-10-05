@@ -60,10 +60,10 @@ class Game_state:
             self.card_rotation = [None, None]
             
             # we create the two players for the game and give them their cards
-            blue_card_0 = all_cards.retrieve_card(data['blue_card_0'])
-            blue_card_1 = all_cards.retrieve_card(data['blue_card_1'])
-            red_card_0 = all_cards.retrieve_card(data['red_card_0'])
-            red_card_1 = all_cards.retrieve_card(data['red_card_1'])
+            blue_card_0 = all_cards.retrieve_card(data['opponent_card_0'])
+            blue_card_1 = all_cards.retrieve_card(data['opponent_card_1'])
+            red_card_0 = all_cards.retrieve_card(data['owner_card_0'])
+            red_card_1 = all_cards.retrieve_card(data['owner_card_1'])
             self.blue_player = Player(blue_card_0, blue_card_1, "blue", self)
             self.red_player = Player(red_card_0, red_card_1, "red", self)
 

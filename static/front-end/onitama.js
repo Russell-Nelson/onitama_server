@@ -39,7 +39,7 @@ function moveCard(source, destination) {
 
 function getSelectionElement(space) {
     return space.querySelector(".selection");
-}
+};
 
 // ANIMATION FUNCTIONS
 
@@ -509,7 +509,7 @@ function start_a_game() {
     var board = document.getElementsByClassName("board")[0];
 
     // create the cards
-    getCard("blue_card_0").style.backgroundImage = "url(static/images/cards/" + deck[0].name + ".png)";
+    getCard("blue_card_0").style.backgroundImage = "url(" + PROJECT_PATH + "static/images/cards/" + deck[0].name + ".png)";
     getCard("blue_card_1").style.backgroundImage = "url(static/images/cards/" + deck[1].name + ".png)";
     getCard("red_card_0").style.backgroundImage = "url(static/images/cards/" + deck[2].name + ".png)";
     getCard("red_card_1").style.backgroundImage = "url(static/images/cards/" + deck[3].name + ".png)";

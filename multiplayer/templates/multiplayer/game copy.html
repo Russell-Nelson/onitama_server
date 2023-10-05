@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+
+
+
+<html lang="en">
+    <head>
+        <title>Onitama</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+        <link rel="stylesheet" href="{% static 'onitama-styling.css' %}">
+        <script>
+            const userColor = "{{ user_color }}";
+            const opponentColor = "{{ opponent_color }}";
+            const gameId = "{{ game_id }}";
+            const isOwner = "{{ is_owner}}" === "true";
+        </script>
+        <script src="{% static 'front-end/multiplayer.js' %}"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="game-space">
+                <div class="board"></div>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+<!-- {{ game_id|json_script:"game-id" }} {# makes the room name accesible for javascript via json object #}
+{{ color|json_script:"user-color" }} -->
+<!-- basic DOM setup script modified from singleplayer -->
+<!-- <script>
+
+    const selectionState = {
+        source: null,
+        target: null,
+    }
+
+    function clickedSpace(e) {
+        if (selectionState.source == null) {
+            selectionState.source = e.currentTarget;
+            return;
+        }
+        if (selectionState.target == null) {
+            selectionState.target = e.currentTarget;
+        }
+        console.log(selectionState);
+        chatSocket.send(JSON.stringify({
+            'color': userColor,
+            'source': selectionState.source.id,
+            'target': selectionState.target.id,
+        }));
+        selectionState.source = null;
+        selectionState.target = null;
+        return;
+    };
+
+    function getPawnElement(space) {
+        return document.getElementById(space.id).querySelector(".pawn");
+    };
+
+    function movePawn(source, destination) {
+        getPawnElement(destination).className = getPawnElement(source).className;
+        getPawnElement(source).className = "pawn pawn-empty";
+        return;
+    };
+
+    function mirror(spaceId) {
+        var row = parseInt(spaceId[0]);
+        var col = parseInt(spaceId[1]);
+        row = 4 - row;
+        col = 4 - col;
+        return row.toString() + col.toString();
+    }
+
+    // basic DOM building and spaces/pieces    
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const userColor = JSON.parse(document.getElementById('user-color').textContent);
+        var otherColor = 'red';
+        console.log(userColor == 'red')
+        if (userColor == 'red') {
+            otherColor = 'blue';
+        }
+
+        var board = document.getElementsByClassName("board")[0];
+
+        // create the spaces
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 5; j++) {
+                let space = document.createElement("div");
+                space.setAttribute("class", "space");
+                space.setAttribute("id", `${i}${j}`);
+                // space.style.backgroundImage = `url(images/spaces/${i}${j}.png`;
+                space.onclick = clickedSpace;
+                board.appendChild(space);
+
+                // let selection_element = document.createElement("div");
+                // selection_element.classList.add("selection");
+                // selection_element.classList.add("selection-empty");
+                // space.appendChild(selection_element);
+
+                let pawn_element = document.createElement("div");
+                pawn_element.classList.add("pawn");
+                pawn_element.classList.add("pawn-empty");
+                space.appendChild(pawn_element);
+            }
+        }
+
+
+        // create the top pieces
+        for (let i = 0; i < 5; i++) {
+            let space = document.getElementById(`0${i}`);
+            if (i == 2) {
+                space.querySelector(".pawn").classList.remove("pawn-empty");
+                space.querySelector(".pawn").classList.add(`pawn-${otherColor}-master`);
+                var top_temple = document.createElement("div");
+                top_temple.classList.add(`${otherColor}-temple`);
+                space.appendChild(top_temple);
+            }
+            else {
+                space.querySelector(".pawn").classList.remove("pawn-empty");
+                space.querySelector(".pawn").classList.add(`pawn-${otherColor}-normal`);
+            }
+        }
+
+        // create the bottom pieces
+        for (let i = 0; i < 5; i++) {
+            let space = document.getElementById(`4${i}`);
+            if (i == 2) {
+                space.querySelector(".pawn").classList.remove("pawn-empty");
+                space.querySelector(".pawn").classList.add(`pawn-${userColor}-master`);
+                var bottom_temple = document.createElement("div");
+                bottom_temple.classList.add(`${userColor}-temple`);
+                space.appendChild(bottom_temple);
+            }
+            else {
+                space.querySelector(".pawn").classList.remove("pawn-empty");
+                space.querySelector(".pawn").classList.add(`pawn-${userColor}-normal`);
+            }
+        }
+    });
+
+
+
+
+
+
+
+    // NEW TESTING FOR CHANNELS
+    const gameId = JSON.parse(document.getElementById('game-id').textContent);
+    const userColor = JSON.parse(document.getElementById('user-color').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/multiplayer/'
+        + gameId
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        var color = data['color'];
+        var sourceId = data['source'];
+        var targetId = data['target'];
+        if (color != userColor) {
+            sourceId = mirror(sourceId);
+            targetId = mirror(targetId);
+        }
+        source = document.getElementById(sourceId);
+        target = document.getElementById(targetId);
+
+        movePawn(source, target);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+</script> -->

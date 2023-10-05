@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from singleplayer.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("singleplayer.urls")),
-    path('move/', include("singleplayer.urls")),
-    path('setup/', include("singleplayer.urls"))
+    path('', home, name="home"),
+    path('singleplayer/', include("singleplayer.urls")),
+    path('multiplayer/', include("multiplayer.urls")),
+    path("accounts/", include("accounts.urls", "accounts")),
+    path('accounts/', include("django.contrib.auth.urls")),
 ]
